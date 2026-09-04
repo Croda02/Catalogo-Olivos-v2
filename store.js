@@ -49,7 +49,7 @@
     ];
     return {
       version:4,
-      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'5212710000000',catalogLimit:60,accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
+      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',catalogLimit:60,accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
       categories:['Decoración','Textiles','Aromas','Cocina y mesa','Accesorios','Regalos'],
       products,
       promotions:[
