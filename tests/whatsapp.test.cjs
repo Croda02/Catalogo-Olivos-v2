@@ -21,7 +21,7 @@ test('el comercio puede guardar textos propios y conservarlos',()=>{
  S.updateBusiness({whatsappTemplates:{product:'Me interesa {producto}, {cantidad} unidades: {subtotal}',general:'¿Pueden ayudarme en {tienda}?',order:'Quiero pedir:\n{lista_productos}\nTotal {subtotal}'}});
  assert.equal(S.load().business.whatsappTemplates.product,'Me interesa {producto}, {cantidad} unidades: {subtotal}');
  const result=M.build(S.load(),'product',[{productId:'taza-olivo',qty:3,variant:'Arena'}]);
- assert.equal(result.text,'Me interesa Taza Olivo, 3 unidades: $567.');
+ assert.equal(result.text,'Me interesa Taza Olivo, 3 unidades: $567');
 });
 test('pedido completo incluye todos los artículos',()=>{
  const result=M.build(S.load(),'order',[{productId:'taza-olivo',qty:2},{productId:'vela-serenidad',qty:1,variant:'Lavanda'}]);
