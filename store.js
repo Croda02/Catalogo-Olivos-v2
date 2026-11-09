@@ -94,6 +94,7 @@
         state.version=5;
         localStorage.setItem(KEY,JSON.stringify(state));
       }
+      if(state.business&&'catalogLimit' in state.business){delete state.business.catalogLimit;localStorage.setItem(KEY,JSON.stringify(state));}
       state.products=(state.products||[]).map(decorateProduct);
       return state;
     }catch(e){ const s=initialState(); localStorage.setItem(KEY,JSON.stringify(s)); return s; }
@@ -135,7 +136,14 @@
   function deleteProduct(id){ const s=load(); s.products=s.products.filter(p=>p.id!==id); save(s,'product-delete'); return s; }
   function updatePromotion(promo){ const s=load(); const i=s.promotions.findIndex(p=>p.id===promo.id); if(i>=0)s.promotions[i]={...s.promotions[i],...promo}; else s.promotions.unshift({...promo,id:promo.id||uid('promo')}); save(s,'promotion'); return s; }
   function deletePromotion(id){const s=load();s.promotions=s.promotions.filter(p=>p.id!==id);save(s,'promotion-delete');return s;}
-  function updateBusiness(patch){ const s=load(); s.business={...s.business,...patch}; save(s,'business'); return s; }
+  function updateBusiness(patch){
+    // Datos editables por el comercio en esta demo; nunca incluir planes ni cuotas.
+    const allowed=['name','tagline','whatsapp','accent','instagram','targetMargin'];
+    const clean={};
+    for(const key of allowed)if(Object.prototype.hasOwnProperty.call(patch||{},key))clean[key]=patch[key];
+    const s=load();s.business={...s.business,...clean};delete s.business.catalogLimit;
+    save(s,'business');return s;
+  }
 
   function createAccount(name,email){ const s=load(); let a=s.accounts.find(x=>x.email.toLowerCase()===email.toLowerCase()); if(!a){a={id:uid('acc'),name,email,createdAt:new Date().toISOString()}; s.accounts.push(a);} s.currentAccount=a.id; if(!s.favorites[a.id])s.favorites[a.id]=[]; save(s,'account'); return a; }
   function logout(){const s=load();s.currentAccount=null;save(s,'logout');}
