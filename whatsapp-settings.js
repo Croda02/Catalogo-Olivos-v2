@@ -27,7 +27,9 @@ renderSettings=function(){
     <button type="button" id="waRestoreDefaults" class="wa-restore">Restaurar textos predeterminados</button>
   </aside>
  </div>`;
- const submit=form.querySelector('.full > button[type=submit], .full > button.btn-dark');
+ const phoneField=form.querySelector('[name=whatsapp]')?.closest('.field');
+ if(phoneField){phoneField.classList.add('wa-number-field');phoneField.querySelector('label').textContent='Número de WhatsApp con lada';wrap.insertBefore(phoneField,wrap.querySelector('.wa-settings-grid'));}
+  const submit=form.querySelector('.full > button[type=submit], .full > button.btn-dark');
  if(submit&&submit.parentElement)submit.parentElement.before(wrap);else form.appendChild(wrap);
  let active='product';
  const fields={general:$('#waTemplateGeneral'),product:$('#waTemplateProduct'),order:$('#waTemplateOrder')};
