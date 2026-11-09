@@ -76,7 +76,7 @@ function cardHTML(p){
   const fav=favorites().includes(p.id);
   const badge=p.salePrice?'<span class="tag-badge sale">Oferta</span>':p.isNew?'<span class="tag-badge">Nuevo</span>':p.bestSeller?'<span class="tag-badge">Favorito</span>':'';
   return `<article class="product-card" data-product-card="${p.id}">
-    <div class="product-img-wrap">${badge}<button class="favorite-heart ${fav?'active':''}" data-fav="${p.id}" aria-label="${fav?'Quitar de favoritos':'Guardar favorito'}">${fav?'♥':'♡'}</button><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"></div>
+    <div class="product-img-wrap">${badge}<button class="favorite-heart ${fav?'active':''}" data-fav="${p.id}" aria-label="${fav?'Quitar de favoritos':'Guardar favorito'}">${fav?'♥':'♡'}</button><button class="product-image-button" type="button" data-view="${esc(p.id)}" aria-label="Ver detalles de ${esc(p.name)}"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"></button></div>
     <div class="product-body"><small>${esc(p.category)}</small><h3>${esc(p.name)}</h3>
       <div class="price-line"><span class="price ${p.salePrice?'sale':''}">${S.money(p.salePrice||p.price)}</span>${p.salePrice?`<span class="old-price">${S.money(p.price)}</span>`:''}</div>
       <span class="availability" data-state="${esc(p.availability)}">${esc(p.availability)}</span>
@@ -88,27 +88,27 @@ function wireProductCards(){
   $$('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation(); S.toggleFavorite(b.dataset.fav); state=S.load(); renderHeader(); renderProducts(); toast(favorites().includes(b.dataset.fav)?'Guardado en favoritos':'Quitado de favoritos');});
   $('[data-add]').forEach(b=>b.onclick=e=>{e.stopPropagation(); const p=productById(b.dataset.add); if(!p||p.availability==='Agotado')return; if((p.variants||[]).length>1){openProduct(p.id);return;} S.addSelection(p.id,1,p.variants?.[0]||''); state=S.load(); renderHeader(); toast(`${p.name} agregado a tu pedido`);});
   $$('[data-view]').forEach(b=>b.onclick=()=>openProduct(b.dataset.view));
-  $$('[data-product-card]').forEach(c=>c.ondblclick=()=>openProduct(c.dataset.productCard));
+  // La imagen y el botón de detalles abren la ficha con un solo toque.
 }
 
 function openProduct(id){
   state=S.load(); const p=productById(id); if(!p)return; activeProduct=p; selectedVariant=p.variants?.[0]||''; selectedQty=1; S.record('product_view',{productId:p.id});
   const fav=favorites().includes(p.id);
   $('#modalRoot').innerHTML=`<div class="overlay" id="modalOverlay"><div class="modal"><button class="modal-close" id="closeModal">✕</button>
-    <div class="product-modal-grid"><div class="product-modal-media"><img src="${esc(p.id==='vela-serenidad'?'/candle-large.jpg':p.image)}" alt="${esc(p.name)}"></div>
+    <div class="product-modal-grid"><div class="product-modal-media"><img src="${esc(p.image)}" alt="${esc(p.name)}"></div>
     <div class="product-modal-info"><span class="eyebrow">${esc(p.category)}</span><h2>${esc(p.name)}</h2>
     <p>${esc(p.description)}</p><div class="detail-pills"><span>✓ ${esc(p.availability)}</span><span>✓ Consulta por WhatsApp</span>${p.isNew?'<span>Nuevo</span>':''}</div>
     <div class="price-line"><span class="price ${p.salePrice?'sale':''}" style="font-size:1.7rem">${S.money(p.salePrice||p.price)}</span>${p.salePrice?`<span class="old-price">${S.money(p.price)}</span>`:''}</div>
     ${(p.variants||[]).length?`<strong style="font-size:.78rem">Opciones</strong><div class="variant-row">${p.variants.map((v,i)=>`<button class="variant-btn ${i===0?'active':''}" data-variant="${esc(v)}">${esc(v)}</button>`).join('')}</div>`:''}
     <div class="quantity-row"><strong>Cantidad</strong><div class="stepper"><button id="minusQty">−</button><span id="qtyValue">1</span><button id="plusQty">+</button></div></div>
-    <div class="product-modal-actions"><button class="btn btn-dark" id="modalAdd" ${p.availability==='Agotado'?'disabled':''}>Agregar al pedido</button><button class="btn wa-btn" id="modalWa">◉ Pedir por WhatsApp</button><button class="btn btn-outline" id="modalFav">${fav?'♥ Quitar de favoritos':'♡ Guardar en favoritos'}</button></div>
+    <div class="product-modal-actions"><button class="btn btn-dark" id="modalAdd" ${p.availability==='Agotado'?'disabled':''}>Agregar al pedido</button><button class="btn wa-btn" id="modalWa" ${p.availability==='Agotado'?'disabled':''}>Pedir por WhatsApp</button><button class="btn btn-outline" id="modalFav">${fav?'♥ Quitar de favoritos':'♡ Guardar en favoritos'}</button></div>
     </div></div></div></div>`;
   $('#closeModal').onclick=closeModal; $('#modalOverlay').onclick=e=>{if(e.target.id==='modalOverlay')closeModal();};
   $$('[data-variant]').forEach((b,i)=>b.onclick=()=>{selectedVariant=b.dataset.variant; $$('[data-variant]').forEach(x=>x.classList.remove('active'));b.classList.add('active');});
   $('#minusQty').onclick=()=>{$('#qtyValue').textContent=selectedQty=Math.max(1,selectedQty-1)}; $('#plusQty').onclick=()=>{$('#qtyValue').textContent=++selectedQty};
   $('#modalAdd').onclick=()=>{if(p.availability==='Agotado')return;S.addSelection(p.id,selectedQty,selectedVariant);state=S.load();renderHeader();toast('Agregado a tu pedido');closeModal();openDrawer('selection');};
   $('#modalFav').onclick=()=>{S.toggleFavorite(p.id);state=S.load();renderHeader();closeModal();openProduct(p.id)};
-  $('#modalWa').onclick=()=>sendWhatsApp([{productId:p.id,qty:selectedQty,variant:selectedVariant}],p.id);
+  $('#modalWa').onclick=()=>{if(p.availability==='Agotado')return;sendWhatsApp([{productId:p.id,qty:selectedQty,variant:selectedVariant}],p.id);};
 }
 function closeModal(){ $('#modalRoot').innerHTML=''; activeProduct=null; }
 
@@ -153,10 +153,10 @@ function sendWhatsApp(items,productId=null){
   if(!lines.length){openDrawer('selection');toast('Agrega productos disponibles para continuar');return;}
   const subtotal=(items||[]).reduce((n,i)=>{const p=productById(i.productId);return n+(p&&p.availability!=='Agotado'?(p.salePrice||p.price)*(i.qty||1):0)},0);
   const text=`Hola, quiero solicitar este pedido de ${state.business.name}:\n\n${lines.join('\n')}\n\nSubtotal estimado: ${S.money(subtotal)}\n\n¿Me confirman disponibilidad, entrega y total final?`;
-  (items||[]).forEach(i=>S.record('whatsapp_click',{productId:i.productId}));
   let phone=String(state.business.whatsapp||'').replace(/\D/g,'');
   if(phone.length===10)phone='52'+phone;
   if(phone.length<11){toast('El negocio debe configurar un número de WhatsApp válido');return;}
+  (items||[]).filter(i=>productById(i.productId)?.availability!=='Agotado').forEach(i=>S.record('whatsapp_click',{productId:i.productId}));
   S.record('order_intent',{items:lines.length,subtotal});
   const url=`https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   window.open(url,'_blank','noopener');
