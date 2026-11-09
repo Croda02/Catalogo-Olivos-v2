@@ -34,6 +34,9 @@
     return events.slice(-5200);
   }
 
+  const SAMPLE_DETAILS={"taza-olivo":{"headline":"Un pequeño ritual para empezar bien el día","longDescription":"Una taza de cerámica de inspiración mediterránea, con acabado cálido y detalles botánicos. Su silueta invita a disfrutar el café de la mañana o un té al terminar la tarde. Combínala con textiles neutros para crear un rincón tranquilo.","features":["Acabado cerámico de inspiración artesanal","Decoración botánica en tonos olivo","Asa amplia y cómoda","Pensada para bebidas calientes"],"specs":{"Material":"Cerámica","Color":"Crema / olivo","Presentación":"1 pieza","Cuidado":"Lavado suave recomendado"},"gallery":["/mug.jpg","/hero.jpg","/stone.jpg"]},"vela-serenidad":{"headline":"El aroma que convierte una pausa en un momento especial","longDescription":"Una vela decorativa con atmósfera mediterránea. Ideal para una tarde de lectura, una sobremesa o para regalar un instante de calma. Selecciona el aroma que mejor acompañe tu espacio.","features":["Envase decorativo de acabado suave","Tres opciones aromáticas","Presentación lista para ambientar","Ideal para regalar"],"specs":{"Tipo":"Vela aromática","Aromas":"Higo y olivo, lavanda, cítricos","Presentación":"1 pieza","Uso":"Interior; no dejar encendida sin supervisión"},"gallery":["/candle.jpg","/candle-alt.jpg","/candle-large.jpg","/hero.jpg"]},"manta-natural":{"headline":"Textura, calidez y un toque natural","longDescription":"Manta decorativa de tejido visualmente rico, diseñada para sumar una capa acogedora al sofá o a los pies de la cama. Su combinación de tonos neutros se integra con espacios contemporáneos y cálidos.","features":["Tejido con textura visible","Bordes con flecos","Colores fáciles de combinar","Para sofá, cama o sillón"],"specs":{"Categoría":"Textil decorativo","Acabado":"Tejido texturizado","Colores":"Natural / arena","Cuidados":"Consultar instrucciones de lavado"},"gallery":["/blanket.jpg","/hero.jpg","/desk.jpg"]},"difusor-mediterraneo":{"headline":"Un ambiente agradable desde que entras","longDescription":"Difusor de varillas de estética refinada, ideal para ambientar entradas, recámaras o espacios de trabajo. Su envase de vidrio añade un detalle decorativo discreto mientras las varillas difunden el aroma.","features":["Difusión mediante varillas","Envase decorativo de vidrio","Opciones aromáticas","Ideal para espacios interiores"],"specs":{"Tipo":"Difusor de varillas","Aromas":"Mediterráneo / lavanda","Presentación":"Frasco y varillas","Precaución":"Mantener lejos de niños y mascotas"},"gallery":["/diffuser.jpg","/hero.jpg","/desk.jpg"]},"tote-olivo":{"headline":"Una bolsa que también es parte de tu estilo","longDescription":"Bolsa de lona natural con asas verde olivo, inspirada en la sencillez del diseño mediterráneo. Perfecta para llevar tus objetos cotidianos con un aspecto cuidado y versátil.","features":["Asas amplias","Diseño ligero para uso diario","Estética botánica","Combinación neutra y verde olivo"],"specs":{"Tipo":"Bolsa tote","Color":"Natural / olivo","Material":"Textil tipo lona","Uso":"Accesorio de diario"},"gallery":["/tote.jpg","/hero.jpg","/desk.jpg"]},"vela-campo":{"headline":"Un toque fresco de naturaleza","longDescription":"Una vela de inspiración botánica con notas verdes que acompaña los momentos de descanso. Su estética minimalista combina con piezas en piedra, madera y textiles naturales.","features":["Aroma de inspiración herbal","Envase decorativo","Estilo minimalista","Opción de regalo"],"specs":{"Tipo":"Vela aromática","Fragancia":"Campo de olivos","Presentación":"1 pieza","Uso":"Interior; no dejar encendida sin supervisión"},"gallery":["/candle-large.jpg","/candle.jpg","/hero.jpg"]},"set-mesa-olivo":{"headline":"La mesa también merece detalles especiales","longDescription":"Un conjunto decorativo para transformar una comida sencilla en una mesa acogedora. Inspiración en tonos tierra, cerámica y fibras naturales, para combinar sin esfuerzo.","features":["Estética natural y contemporánea","Conjunto decorativo de mesa","Combina con textiles neutros","Ideal para regalar"],"specs":{"Categoría":"Accesorios de mesa","Estilo":"Mediterráneo","Presentación":"Set de muestra","Disponibilidad":"Sobre pedido"},"gallery":["/stone.jpg","/hero.jpg","/desk.jpg"]},"bolsa-lino":{"headline":"Ligereza para acompañarte todos los días","longDescription":"Una bolsa de estilo natural, fácil de combinar en salidas cotidianas y pequeños recados. Su imagen sobria permite usarla con prendas y accesorios variados.","features":["Diseño versátil","Acabado visual natural","Uso cotidiano","Disponible en dos tonos"],"specs":{"Tipo":"Bolsa de tela","Tonos":"Natural / verde olivo","Uso":"Diario","Cuidado":"Limpieza suave"},"gallery":["/tote.jpg","/desk.jpg","/hero.jpg"]},"manta-arena":{"headline":"Suavidad visual para espacios serenos","longDescription":"Una manta decorativa de tonos arena que completa sillones y recámaras con una textura sutil. Aporta profundidad a ambientes de madera, piedra y lino.","features":["Tonos neutros","Decoración versátil","Textura atractiva","Para sofá o cama"],"specs":{"Categoría":"Textil decorativo","Color":"Arena","Presentación":"1 pieza","Cuidado":"Consultar instrucciones de lavado"},"gallery":["/blanket.jpg","/desk.jpg","/hero.jpg"]},"taza-campo":{"headline":"Cerámica con carácter natural","longDescription":"Taza de inspiración orgánica y acabado sobrio, pensada para esos momentos tranquilos con tu bebida favorita. Consulta su próxima disponibilidad.","features":["Acabado de estética artesanal","Tono piedra","Asa cómoda","Diseño atemporal"],"specs":{"Material":"Cerámica","Color":"Piedra","Presentación":"1 pieza","Disponibilidad":"Agotado"},"gallery":["/mug.jpg","/stone.jpg","/hero.jpg"]}};
+  const decorateProduct=p=>p&&SAMPLE_DETAILS[p.id]?{...SAMPLE_DETAILS[p.id],...p,gallery:Array.isArray(p.gallery)&&p.gallery.length?p.gallery:SAMPLE_DETAILS[p.id].gallery,features:Array.isArray(p.features)&&p.features.length?p.features:SAMPLE_DETAILS[p.id].features,specs:p.specs&&Object.keys(p.specs).length?p.specs:SAMPLE_DETAILS[p.id].specs}:p;
+
   function initialState(){
     const products=[
       {id:'taza-olivo',name:'Taza Olivo',sku:'TAZ-001',category:'Cocina y mesa',description:'Taza de cerámica artesanal con ilustración botánica. Una pieza cálida para café, té o infusiones.',price:189,salePrice:null,image:'/mug.jpg',active:true,availability:'Disponible',featured:true,isNew:true,bestSeller:true,tags:['artesanal','cerámica'],variants:['Olivo','Arena']},
@@ -51,7 +54,7 @@
       version:5,
       business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',catalogLimit:60,accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
       categories:['Decoración','Textiles','Aromas','Cocina y mesa','Accesorios','Regalos'],
-      products,
+      products:products.map(decorateProduct),
       promotions:[
         {id:'promo-hogar',name:'Hogar en armonía',description:'Hasta 30% en velas, aromas y textiles seleccionados.',badge:'OFERTA DE TEMPORADA',active:true,start:'2026-09-01',end:'2026-09-15',productIds:['vela-serenidad','difusor-mediterraneo','manta-arena']},
         {id:'promo-nuevos',name:'Nuevos favoritos',description:'Descubre las piezas más recientes de Casa Olivo.',badge:'NUEVA COLECCIÓN',active:true,start:'2026-09-01',end:'2026-10-01',productIds:['taza-olivo','tote-olivo','set-mesa-olivo']}
@@ -91,6 +94,7 @@
         state.version=5;
         localStorage.setItem(KEY,JSON.stringify(state));
       }
+      state.products=(state.products||[]).map(decorateProduct);
       return state;
     }catch(e){ const s=initialState(); localStorage.setItem(KEY,JSON.stringify(s)); return s; }
   }
@@ -121,10 +125,10 @@
   function updateProduct(product){
     const s=load();
     const idx=s.products.findIndex(p=>p.id===product.id);
-    if(idx>=0) s.products[idx]={...s.products[idx],...product};
+    if(idx>=0) s.products[idx]=decorateProduct({...s.products[idx],...product});
     else{
       if(s.products.length>=s.business.catalogLimit) throw new Error('Has llegado al límite de productos del catálogo.');
-      s.products.unshift({...product,id:product.id||slugify(product.name)||uid('prod')});
+      s.products.unshift(decorateProduct({...product,id:product.id||slugify(product.name)||uid('prod')}));
     }
     save(s,'product'); return s;
   }
@@ -153,5 +157,27 @@
     return {opens:count('catalog_open'),views:count('product_view'),whatsapp:count('whatsapp_click'),searches:count('search'),avgSeconds:avg,byDay,productStats:prod,sources,events:ev};
   }
 
-  window.CasaStore={KEY,money,slugify,uid,load,save,reset,record,sessionId,updateProduct,deleteProduct,updatePromotion,deletePromotion,updateBusiness,createAccount,logout,toggleFavorite,addSelection,setSelection,stats,channel};
+  function insights(days=30,{includeDemo=false}={}){
+    const s=load(),since=Date.now()-days*86400000;
+    const events=(s.analytics||[]).filter(e=>new Date(e.ts).getTime()>=since&&(includeDemo||!String(e.sessionId||'').startsWith('seed_')));
+    const unique=type=>new Set(events.filter(e=>e.type===type).map(e=>e.sessionId)).size;
+    const count=type=>events.filter(e=>e.type===type).length;
+    const sessions=new Set(events.filter(e=>e.type==='catalog_open').map(e=>e.sessionId));
+    const daily={};for(let i=days-1;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);daily[d.toISOString().slice(0,10)]={visits:0,productViews:0,intents:0};}
+    const products={};const searches={};const sources={};const viewed=new Set();const selected=new Set();const sent=new Set();
+    for(const e of events){
+      const k=e.ts.slice(0,10);
+      if(e.type==='catalog_open'){if(daily[k])daily[k].visits++;sources[e.source||'Directo']=(sources[e.source||'Directo']||0)+1;}
+      if(e.type==='product_view'){viewed.add(e.sessionId);if(daily[k])daily[k].productViews++;}
+      if(e.type==='selection_add')selected.add(e.sessionId);
+      if(e.type==='order_intent'){sent.add(e.sessionId);if(daily[k])daily[k].intents++;}
+      if(e.type==='search'&&e.query){const term=String(e.query).toLowerCase().trim();if(term)searches[term]=(searches[term]||0)+1;}
+      if(e.productId){const p=products[e.productId]||(products[e.productId]={views:0,adds:0,contacts:0,favorites:0});if(e.type==='product_view')p.views++;if(e.type==='selection_add')p.adds++;if(e.type==='whatsapp_click')p.contacts++;if(e.type==='favorite_toggle')p.favorites++;}
+    }
+    const visits=sessions.size,viewedCount=[...viewed].filter(x=>sessions.has(x)).length,selectedCount=[...selected].filter(x=>sessions.has(x)).length,sentCount=[...sent].filter(x=>sessions.has(x)).length;
+    const noResult=events.filter(e=>e.type==='search_no_results');
+    const abandoned=Math.max(0,selectedCount-sentCount);
+    return {days,includeDemo,visits,views:count('product_view'),viewedCount,selectedCount,sentCount,whatsappClicks:count('whatsapp_click'),searchCount:count('search'),noResultQueries:noResult.map(e=>e.query).filter(Boolean),abandoned,rate:visits?sentCount/visits*100:0,products,sources,searches,daily,events,seedExcluded:(s.analytics||[]).filter(e=>String(e.sessionId||'').startsWith('seed_')).length,localOnly:true};
+  }
+  window.CasaStore={insights,KEY,money,slugify,uid,load,save,reset,record,sessionId,updateProduct,deleteProduct,updatePromotion,deletePromotion,updateBusiness,createAccount,logout,toggleFavorite,addSelection,setSelection,stats,channel};
 })();
