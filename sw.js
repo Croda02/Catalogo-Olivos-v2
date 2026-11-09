@@ -1,4 +1,4 @@
-const CACHE='casa-olivo-merchant-decisions-v8';
+const CACHE='casa-olivo-merchant-editor-v9';
 const ASSETS=[
   '/', '/index.html','/admin.html','/styles.css','/premium.css','/detail-insights.css','/decision-center.css','/decision-engine.js','/decision-ui.js','/premium.js','/product-detail.js','/admin-insights.js','/store.js','/app.js','/admin.js','/manifest.webmanifest','/icon.svg',
   '/hero.jpg','/mug.jpg','/candle.jpg','/candle-alt.jpg','/candle-large.jpg','/blanket.jpg','/diffuser.jpg','/tote.jpg','/stone.jpg','/desk.jpg'
