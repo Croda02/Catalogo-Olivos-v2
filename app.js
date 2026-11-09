@@ -152,9 +152,8 @@ function sendWhatsApp(items,productId=null){
   const type=productId?'product':'order';
   const msg=window.CasaMessages.build(state,type,items||[]);
   if(!msg.ok){toast(msg.error);return;}
-  const opened=window.open(msg.url,'_blank','noopener');
-  // No confirmación del envío del mensaje: únicamente se registra que se intentó abrir WhatsApp.
-  if(!opened){toast('Revisa si el navegador bloqueó WhatsApp.');return;}
+  // Apertura iniciada; no podemos verificar envío ni recepción del mensaje en WhatsApp.
+  window.open(msg.url,'_blank','noopener');
   msg.items.forEach(i=>S.record('whatsapp_click',{productId:i.p.id}));
   S.record('order_intent',{items:msg.items.length,subtotal:msg.subtotal,channel:'whatsapp'});
 }
@@ -162,8 +161,7 @@ function contactWhatsApp(){
   state=S.load();
   const msg=window.CasaMessages.build(state,'general');
   if(!msg.ok){toast(msg.error);return;}
-  const opened=window.open(msg.url,'_blank','noopener');
-  if(!opened)toast('Revisa si el navegador bloqueó WhatsApp.');
+  window.open(msg.url,'_blank','noopener');
 }
 function bindGlobal(){
   $('#searchInput').addEventListener('input',e=>{currentSearch=e.target.value.trim(); currentCategory='Todos'; renderCategories(); renderProducts(); clearTimeout(window.__searchTimer); window.__searchTimer=setTimeout(()=>{if(currentSearch){S.record('search',{query:currentSearch});if(!$('#productGrid').children.length)S.record('search_no_results',{query:currentSearch});}},650);});
