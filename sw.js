@@ -1,4 +1,4 @@
-const CACHE='casa-olivo-premium-v5';
+const CACHE='casa-olivo-final-v6';
 const ASSETS=[
   '/', '/index.html','/admin.html','/styles.css','/premium.css','/premium.js','/store.js','/app.js','/admin.js','/manifest.webmanifest','/icon.svg',
   '/hero.jpg','/mug.jpg','/candle.jpg','/candle-alt.jpg','/candle-large.jpg','/blanket.jpg','/diffuser.jpg','/tote.jpg','/stone.jpg','/desk.jpg'

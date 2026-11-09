@@ -162,14 +162,21 @@ function sendWhatsApp(items,productId=null){
   window.open(url,'_blank','noopener');
 }
 
+function contactWhatsApp(){
+  const phoneRaw=String(S.load().business.whatsapp||'').replace(/\D/g,'');
+  const phone=phoneRaw.length===10?'52'+phoneRaw:phoneRaw;
+  if(phone.length<11){toast('El negocio debe configurar WhatsApp');return;}
+  const msg='Hola, vi su catálogo de '+S.load().business.name+' y quisiera hacer una consulta sobre sus productos.';
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank','noopener');
+}
 function bindGlobal(){
   $('#searchInput').addEventListener('input',e=>{currentSearch=e.target.value.trim(); currentCategory='Todos'; renderCategories(); renderProducts(); clearTimeout(window.__searchTimer); window.__searchTimer=setTimeout(()=>{if(currentSearch)S.record('search',{query:currentSearch})},600);});
   $('#sortSelect').onchange=e=>{currentSort=e.target.value;renderProducts()};
   $$('[data-filter]').forEach(b=>b.onclick=()=>{$$('[data-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFilter=b.dataset.filter;renderProducts();});
   $('#clearFiltersBtn').onclick=()=>{currentCategory='Todos';currentSearch='';currentFilter='all';$('#searchInput').value='';$$('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));renderCategories();renderProducts();};
   $('#accountBtn').onclick=()=>openDrawer('account'); $('#favoritesBtn').onclick=()=>openDrawer('favorites'); $('#selectionBtn').onclick=()=>openDrawer('selection');
-  $('#headerWhatsApp').onclick=()=>state.selection.length?openDrawer('selection'):$('#products').scrollIntoView({behavior:'smooth'});
-  $('#mobileFavBtn').onclick=()=>openDrawer('favorites'); $('#mobileSelectionBtn').onclick=()=>openDrawer('selection'); $('#mobileWhatsappBtn').onclick=()=>state.selection.length?openDrawer('selection'):$('#products').scrollIntoView({behavior:'smooth'});
+  $('#headerWhatsApp').onclick=()=>contactWhatsApp();
+  $('#mobileFavBtn').onclick=()=>openDrawer('favorites'); $('#mobileSelectionBtn').onclick=()=>openDrawer('selection'); $('#mobileWhatsappBtn').onclick=()=>contactWhatsApp();
   $('[data-scroll-top]').onclick=()=>scrollTo({top:0,behavior:'smooth'}); $('[data-open-categories]').onclick=()=>$('#categoryCircles').scrollIntoView({behavior:'smooth'}); $$('[data-scroll-products]').forEach(b=>b.onclick=()=>$('#products').scrollIntoView({behavior:'smooth'}));
   $('#mobileMenuBtn').onclick=()=>$('#categoryNav').scrollIntoView({behavior:'smooth'});
 }
