@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/premium.css" />
   <title>Casa Olivo — Catálogo</title>
 </head>
 <body class="storefront-body">
@@ -18,18 +19,18 @@
   <header class="store-header">
     <div class="header-main container">
       <a class="brand" href="#top" aria-label="Casa Olivo inicio">
-        <span class="brand-mark">❧</span>
+        <span class="brand-mark" aria-hidden="true">❧</span>
         <span><strong id="brandName">Casa Olivo</strong><small id="brandTagline">Hogar que inspira</small></span>
       </a>
       <div class="search-wrap">
-        <span>⌕</span>
+        <span aria-hidden="true" class="search-symbol">⌕</span>
         <input id="searchInput" type="search" placeholder="Buscar productos, categorías o inspiración..." autocomplete="off" />
       </div>
       <nav class="header-actions" aria-label="Acciones principales">
-        <button class="icon-action" id="accountBtn"><span>♙</span><small id="accountLabel">Mi cuenta</small></button>
-        <button class="icon-action" id="favoritesBtn"><span>♡</span><small>Favoritos</small><b id="favCount" class="badge">0</b></button>
-        <button class="icon-action whatsapp" id="headerWhatsApp"><span>◉</span><small>WhatsApp</small></button>
-        <button class="icon-action" id="selectionBtn"><span>🛍</span><small>Mi selección</small><b id="selectionCount" class="badge">0</b></button>
+        <button class="icon-action" id="accountBtn"><span class="ui-icon" data-icon="user"></span><small id="accountLabel">Mi cuenta</small></button>
+        <button class="icon-action" id="favoritesBtn"><span class="ui-icon" data-icon="heart"></span><small>Favoritos</small><b id="favCount" class="badge">0</b></button>
+        <button class="icon-action whatsapp" id="headerWhatsApp"><span class="ui-icon" data-icon="message"></span><small>WhatsApp</small></button>
+        <button class="icon-action" id="selectionBtn"><span class="ui-icon" data-icon="bag"></span><small>Mi pedido</small><b id="selectionCount" class="badge">0</b></button>
       </nav>
       <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Abrir menú">☰</button>
     </div>
@@ -41,17 +42,15 @@
   <main id="top">
     <section class="hero-section container">
       <div class="hero-copy">
-        <span class="eyebrow">Colección de temporada</span>
-        <h1>Hogar con<br><em>más vida</em></h1>
-        <p>Piezas cálidas y atemporales para espacios que se sienten tuyos.</p>
-        <button class="btn btn-dark" data-scroll-products>Descubrir colección <span>→</span></button>
-        <div class="hero-points">
-          <span>✓ Consulta fácil</span><span>✓ Promociones visibles</span><span>✓ Pedido por WhatsApp</span>
-        </div>
+        <span class="eyebrow">Una casa, infinitas historias</span>
+        <h1>Lo cotidiano<br><em>extraordinario.</em></h1>
+        <p>Objetos que transforman momentos sencillos en pequeños rituales. Descubre piezas para disfrutar cada rincón.</p>
+        <button class="btn btn-dark" data-scroll-products>Explorar el catálogo <span aria-hidden="true">→</span></button>
+        <div class="hero-points"><span>Explora</span><span>Elige tus favoritos</span><span>Confirma por WhatsApp</span></div>
       </div>
       <div class="hero-image" role="img" aria-label="Decoración natural Casa Olivo">
         <img src="/hero.jpg" alt="Colección Casa Olivo" />
-        <div class="hero-note">Vive bonito<br>todos los días</div>
+        <div class="hero-note">Tu espacio.<br>Tu esencia.</div>
       </div>
     </section>
 
@@ -63,7 +62,7 @@
       <div class="section-head">
         <div>
           <span class="eyebrow">Catálogo</span>
-          <h2 id="productsTitle">Productos destacados</h2>
+          <h2 id="productsTitle">Encuentra algo especial</h2>
         </div>
         <div class="products-toolbar">
           <button class="chip active" data-filter="all">Todos</button>
@@ -90,12 +89,12 @@
       <div>
         <span class="eyebrow">Casa Olivo</span>
         <h2>Pequeños detalles,<br>grandes historias.</h2>
-        <p>Este sitio es una demo funcional de un catálogo comercial: el negocio puede cambiar productos, promociones y precios desde su panel; el cliente puede buscar, guardar favoritos y armar una selección para enviarla por WhatsApp.</p>
-        <a class="text-link" href="admin.html">Abrir panel del negocio →</a>
+        <p>Elige sin prisas. Explora nuestra selección, guarda tus piezas preferidas y prepara tu pedido. Estamos a un mensaje de ayudarte.</p>
+        <button class="text-link story-cta" data-scroll-products>Descubrir productos →</button>
       </div>
       <div class="story-card">
         <img src="/stone.jpg" alt="Texturas Casa Olivo" />
-        <div><strong>Diseñado para vender conversando</strong><span>Sin obligar al cliente a completar un checkout.</span></div>
+        <div><strong>Detalles que hacen hogar</strong><span>Piezas para dar carácter a tus espacios.</span></div>
       </div>
     </section>
   </main>
@@ -109,17 +108,20 @@
   </footer>
 
   <div class="mobile-bottom-nav">
-    <button data-scroll-top>⌂<small>Inicio</small></button>
-    <button data-open-categories>◫<small>Categorías</small></button>
-    <button id="mobileFavBtn">♡<small>Favoritos</small></button>
-    <button id="mobileSelectionBtn">🛍<small>Selección</small></button>
-    <button id="mobileWhatsappBtn">◉<small>WhatsApp</small></button>
+    <button data-scroll-top><span class="ui-icon" data-icon="home"></span><small>Inicio</small></button>
+    <button data-open-categories><span class="ui-icon" data-icon="grid"></span><small>Categorías</small></button>
+    <button id="mobileFavBtn"><span class="ui-icon" data-icon="heart"></span><small>Favoritos</small></button>
+    <button id="mobileSelectionBtn"><span class="ui-icon" data-icon="bag"></span><small>Pedido</small><b class="mobile-cart-count" id="mobileCartCount">0</b></button>
+    <button id="mobileWhatsappBtn"><span class="ui-icon" data-icon="message"></span><small>WhatsApp</small></button>
   </div>
+
+  <div class="floating-cart hidden" id="floatingCart"><span><strong id="floatingCartCount">0 productos</strong><small>Listos para revisar</small></span><button id="floatingCartBtn" type="button">Revisar pedido <span aria-hidden="true">→</span></button></div>
 
   <div id="modalRoot"></div>
   <div id="drawerRoot"></div>
 
   <script src="/store.js"></script>
   <script src="/app.js"></script>
+  <script src="/premium.js"></script>
 </body>
 </html>
