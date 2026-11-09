@@ -91,4 +91,5 @@
    $('#openDecisionCenter').onclick=()=>navTo('decisions');
  };
  window.CasaDecisionUI={renderDecisions};
+ render();
 })();
