@@ -52,7 +52,7 @@
     ];
     return {
       version:5,
-      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
+      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',whatsappTemplates:{general:'Hola, vi el catálogo de {tienda} y quisiera hacer una consulta.',product:'Hola, vi {producto} en el catálogo de {tienda}. Me interesa la opción {variante}, cantidad {cantidad}, precio estimado {subtotal}. ¿Podrían confirmarme disponibilidad y entrega?',order:'Hola, quiero consultar este pedido en {tienda}:\n\n{lista_productos}\n\nSubtotal estimado: {subtotal}\n\n¿Me confirman disponibilidad y entrega?'},accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
       categories:['Decoración','Textiles','Aromas','Cocina y mesa','Accesorios','Regalos'],
       products:products.map(decorateProduct),
       promotions:[
@@ -138,9 +138,22 @@
   function deletePromotion(id){const s=load();s.promotions=s.promotions.filter(p=>p.id!==id);save(s,'promotion-delete');return s;}
   function updateBusiness(patch){
     // Datos editables por el comercio en esta demo; nunca incluir planes ni cuotas.
-    const allowed=['name','tagline','whatsapp','accent','instagram','targetMargin'];
+    const allowed=['name','tagline','whatsapp','accent','instagram','targetMargin','whatsappTemplates'];
     const clean={};
     for(const key of allowed)if(Object.prototype.hasOwnProperty.call(patch||{},key))clean[key]=patch[key];
+    if(Object.prototype.hasOwnProperty.call(clean,'whatsappTemplates')){
+      const current=load().business.whatsappTemplates||{};
+      const keys=['general','product','order'];
+      const templates={...current};
+      for(const k of keys)if(typeof clean.whatsappTemplates?.[k]==='string'){
+        const value=clean.whatsappTemplates[k].trim();
+        if(!value||value.length>900)throw new Error('El mensaje de '+k+' debe tener entre 1 y 900 caracteres.');
+        const unsupported=[...value.matchAll(/\{([^{}]+)\}/g)].map(x=>x[1]).filter(x=>!['tienda','producto','variante','cantidad','precio','subtotal','lista_productos'].includes(x));
+        if(unsupported.length)throw new Error('Variable desconocida: '+unsupported[0]);
+        templates[k]=value;
+      }
+      clean.whatsappTemplates=templates;
+    }
     const s=load();s.business={...s.business,...clean};delete s.business.catalogLimit;
     save(s,'business');return s;
   }
