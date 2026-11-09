@@ -148,26 +148,22 @@ function closeDrawer(){ $('#drawerRoot').innerHTML=''; }
 
 function sendWhatsApp(items,productId=null){
   state=S.load();
-  if(!items?.length && productId){items=[{productId,qty:1,variant:''}]}
-  const lines=(items||[]).filter(i=>productById(i.productId)?.availability!=='Agotado').map(i=>{const p=productById(i.productId);return p?`• ${p.name}${i.variant?` — ${i.variant}`:''} · Cant. ${i.qty||1} · ${S.money((p.salePrice||p.price)*(i.qty||1))}`:''}).filter(Boolean);
-  if(!lines.length){openDrawer('selection');toast('Agrega productos disponibles para continuar');return;}
-  const subtotal=(items||[]).reduce((n,i)=>{const p=productById(i.productId);return n+(p&&p.availability!=='Agotado'?(p.salePrice||p.price)*(i.qty||1):0)},0);
-  const text=`Hola, quiero solicitar este pedido de ${state.business.name}:\n\n${lines.join('\n')}\n\nSubtotal estimado: ${S.money(subtotal)}\n\n¿Me confirman disponibilidad, entrega y total final?`;
-  let phone=String(state.business.whatsapp||'').replace(/\D/g,'');
-  if(phone.length===10)phone='52'+phone;
-  if(phone.length<11){toast('El negocio debe configurar un número de WhatsApp válido');return;}
-  (items||[]).filter(i=>productById(i.productId)?.availability!=='Agotado').forEach(i=>S.record('whatsapp_click',{productId:i.productId}));
-  S.record('order_intent',{items:lines.length,subtotal});
-  const url=`https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-  window.open(url,'_blank','noopener');
+  if((!items||!items.length)&&productId)items=[{productId,qty:1,variant:''}];
+  const type=productId?'product':'order';
+  const msg=window.CasaMessages.build(state,type,items||[]);
+  if(!msg.ok){toast(msg.error);return;}
+  const opened=window.open(msg.url,'_blank','noopener');
+  // No confirmación del envío del mensaje: únicamente se registra que se intentó abrir WhatsApp.
+  if(!opened){toast('Revisa si el navegador bloqueó WhatsApp.');return;}
+  msg.items.forEach(i=>S.record('whatsapp_click',{productId:i.p.id}));
+  S.record('order_intent',{items:msg.items.length,subtotal:msg.subtotal,channel:'whatsapp'});
 }
-
 function contactWhatsApp(){
-  const phoneRaw=String(S.load().business.whatsapp||'').replace(/\D/g,'');
-  const phone=phoneRaw.length===10?'52'+phoneRaw:phoneRaw;
-  if(phone.length<11){toast('El negocio debe configurar WhatsApp');return;}
-  const msg='Hola, vi su catálogo de '+S.load().business.name+' y quisiera hacer una consulta sobre sus productos.';
-  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank','noopener');
+  state=S.load();
+  const msg=window.CasaMessages.build(state,'general');
+  if(!msg.ok){toast(msg.error);return;}
+  const opened=window.open(msg.url,'_blank','noopener');
+  if(!opened)toast('Revisa si el navegador bloqueó WhatsApp.');
 }
 function bindGlobal(){
   $('#searchInput').addEventListener('input',e=>{currentSearch=e.target.value.trim(); currentCategory='Todos'; renderCategories(); renderProducts(); clearTimeout(window.__searchTimer); window.__searchTimer=setTimeout(()=>{if(currentSearch){S.record('search',{query:currentSearch});if(!$('#productGrid').children.length)S.record('search_no_results',{query:currentSearch});}},650);});
