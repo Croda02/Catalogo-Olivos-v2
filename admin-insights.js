@@ -54,7 +54,10 @@
    if(!form||!grid)return;
    const block=document.createElement('div');block.className='full enriched-editor';
    const specs=p&&p.specs&&typeof p.specs==='object'?Object.entries(p.specs).map(([k,v])=>k+': '+v).join('\n'):'';
-   block.innerHTML='<div class="editor-section-title"><strong>Ficha de producto ampliada</strong><small>Lo que el cliente necesita saber antes de decidir.</small></div>'+
+   block.innerHTML='<div class="editor-section-title"><strong>Información comercial e inventario</strong><small>Registra costo y existencias aquí. Se usarán para análisis; no aparecen en la ficha pública.</small></div>'+ 
+   '<div class="field"><label>Costo unitario (MXN, opcional)</label><input name="costPrice" type="number" step="0.01" min="0" placeholder="Sin dato" value="'+escape(p?.costPrice??'')+'"></div>'+
+   '<div class="field"><label>Existencias (unidades, opcional)</label><input name="stockQty" type="number" step="1" min="0" placeholder="Sin dato" value="'+escape(p?.stockQty??'')+'"></div>'+
+   '<div class="editor-section-title"><strong>Ficha de producto ampliada</strong><small>Lo que el cliente necesita saber antes de decidir.</small></div>'+
    '<div class="field"><label>Frase de beneficio</label><input name="headline" placeholder="Ej. Tu pausa favorita empieza aquí" value="'+escape(p?.headline||'')+'"></div>'+
    '<div class="field"><label>Descripción completa</label><textarea rows="5" name="longDescription" placeholder="Describe usos, beneficios y por qué destaca...">'+escape(p?.longDescription||'')+'</textarea></div>'+
    '<div class="field"><label>Galería de imágenes (una URL por línea)</label><textarea name="gallery" rows="4" placeholder="/mug.jpg\n/hero.jpg">'+escape((p?.gallery||[p?.image||'/mug.jpg']).join('\n'))+'</textarea><small>Usa imágenes del catálogo o URL HTTPS accesibles. La primera imagen principal también aparece en la galería.</small></div>'+
@@ -67,7 +70,11 @@
      const lines=v=>String(v||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
      const specs={};for(const l of lines(fd.get('specs'))){const i=l.indexOf(':');if(i>0)specs[l.slice(0,i).trim()]=l.slice(i+1).trim()}
      const gallery=lines(fd.get('gallery')).filter(url=>url.startsWith('/')||url.startsWith('https://')).slice(0,8);
-     const extras={headline:String(fd.get('headline')||'').trim(),longDescription:String(fd.get('longDescription')||'').trim(),gallery,features:lines(fd.get('features')).slice(0,12),specs};
+     const rawCost=String(fd.get('costPrice')??'').trim(),rawStock=String(fd.get('stockQty')??'').trim();
+     const costPrice=rawCost===''?null:Number(rawCost),stockQty=rawStock===''?null:Number(rawStock);
+     if(costPrice!==null&&(!Number.isFinite(costPrice)||costPrice<0)){e.preventDefault();alert('El costo debe ser un número igual o mayor que cero');return;}
+     if(stockQty!==null&&(!Number.isInteger(stockQty)||stockQty<0)){e.preventDefault();alert('Las existencias deben ser unidades enteras iguales o mayores que cero');return;}
+     const extras={headline:String(fd.get('headline')||'').trim(),longDescription:String(fd.get('longDescription')||'').trim(),gallery,features:lines(fd.get('features')).slice(0,12),specs,costPrice,stockQty};
      const currentId=id||S.slugify(fd.get('name'))||'';
      originalSubmit(e);
      const latest=S.load().products.find(p=>p.id===currentId);

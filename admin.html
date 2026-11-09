@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#31472d" />
+  <meta name="robots" content="noindex,nofollow" />
   <link rel="icon" href="/icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,11 +31,6 @@
         <button data-view="analytics"><span>▥</span>Estadísticas</button>
         <button data-view="settings"><span>⚙</span>Configuración</button>
       </nav>
-      <div class="admin-side-note">
-        <strong>Catálogo Comercial</strong>
-        <span id="planUsage">0 de 60 productos</span>
-        <div class="usage-bar"><i id="usageFill"></i></div>
-      </div>
       <a class="preview-link" href="index.html" target="_blank">↗ Ver catálogo público</a>
     </aside>
 
@@ -44,6 +40,7 @@
         <div class="admin-search"><span>⌕</span><input id="adminSearch" placeholder="Buscar en productos..." /></div>
         <div class="admin-user"><div class="avatar">CO</div><div><strong>Casa Olivo</strong><small>Propietario</small></div></div>
       </header>
+      <div style="padding:10px 24px;color:#755f36;background:#faf4e6;font-size:12px;border-bottom:1px solid #f0e5c9" role="note">Versión demostrativa: el panel no tiene autenticación y la información se almacena solo en este navegador. No introduzcas datos comerciales reales o confidenciales.</div>
       <main id="adminContent" class="admin-content"></main>
     </div>
   </div>

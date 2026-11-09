@@ -19,7 +19,6 @@
    navTo('decisions');
    const target=document.querySelector('.decision-cost-table');
    target?.scrollIntoView({behavior:'smooth',block:'start'});
-   target?.querySelector('input')?.focus();
   });
  };
  const headline=(a)=>'<div class="decision-hero"><div><span class="decision-hero-kicker">INTELIGENCIA COMERCIAL · DEMOSTRACIÓN</span><h1>Qué conviene hacer hoy</h1><p>Menos números sueltos. Diagnóstico de tu catálogo, márgenes orientativos y acciones concretas para vender mejor.</p></div><div class="decision-hero-score"><strong>'+a.avgQuality+'<span>/100</span></strong><small>Calidad media de fichas</small></div></div>';
@@ -28,11 +27,9 @@
    const {state:st,data:a,goal,traffic}=get();
    state=st;
    const usable=a.products.slice().sort((x,y)=>(x.margin??100)-(y.margin??100)||x.quality-y.quality);
-   const rows=usable.map(({product:p,quality,cost,stock,margin,price})=>{
-    const costTxt=cost==null?'':cost;
-    const stockTxt=stock==null?'':stock;
-    const marginText=margin==null?'<span class="decision-muted">Agrega costo</span>':'<strong class="'+(margin<goal?'decision-negative':'decision-positive')+'">'+signed(margin)+'</strong>';
-    return '<tr data-decision-product="'+e(p.id)+'"><td><div class="decision-product"><img src="'+e(p.image)+'" alt=""><span><strong>'+e(p.name)+'</strong><small>'+e(p.sku)+' · Ficha '+quality+'/100</small></span></div></td><td>'+money(p.price)+'</td><td>'+money(price)+'</td><td><label class="decision-small-field">Costo MXN<input data-cost type="number" min="0" step="0.01" value="'+costTxt+'" placeholder="Sin dato" aria-label="Costo de '+e(p.name)+'"></label></td><td><label class="decision-small-field">Unidades<input data-stock type="number" min="0" step="1" value="'+stockTxt+'" placeholder="Sin dato" aria-label="Existencias de '+e(p.name)+'"></label></td><td>'+marginText+'</td><td><button class="decision-save" data-save-product="'+e(p.id)+'">Guardar</button></td></tr>'
+   const rows=usable.map(({product:p,quality,stock,margin,price})=>{
+    const marginText=margin==null?'<span class="decision-muted">Costo no registrado</span>':'<strong class="'+(margin<goal?'decision-negative':'decision-positive')+'">'+signed(margin)+'</strong>';
+    return '<tr data-decision-product="'+e(p.id)+'"><td><div class="decision-product"><img src="'+e(p.image)+'" alt=""><span><strong>'+e(p.name)+'</strong><small>'+e(p.sku)+' · Calidad de ficha '+quality+'/100</small></span></div></td><td>'+money(price)+'</td><td>'+(stock==null?'Sin dato':stock+' unidades')+'</td><td>'+marginText+'</td><td><button class="decision-save" data-edit-product="'+e(p.id)+'">Editar producto →</button></td></tr>';
    }).join('');
    const openIssues=a.issues.slice(0,6);
    $('#adminContent').innerHTML=
@@ -52,8 +49,8 @@
     '<section class="decision-panel"><div class="decision-panel-head"><div><span class="eyebrow">Diagnóstico</span><h3>¿Por qué esta prioridad?</h3></div></div>'+
     '<div class="decision-explain"><div><strong>Contenido del producto</strong><p>Fotos, descripción amplia, beneficios, ficha técnica, precio y disponibilidad.</p></div><div><strong>Rentabilidad</strong><p>Comparación entre precio vigente, costo unitario y margen objetivo configurable.</p></div><div><strong>Señales de interés</strong><p>Solo se generan alertas de comportamiento al alcanzar muestras mínimas en este dispositivo.</p></div></div>'+
     '<div class="decision-goal"><label for="decisionMarginTarget">Margen bruto objetivo (%)</label><input type="number" id="decisionMarginTarget" min="1" max="90" step="1" value="'+goal+'"><button id="saveDecisionTarget">Guardar meta</button></div></section></div>'+
-    '<div class="decision-section-title"><div><span class="eyebrow">Control de márgenes</span><h2>Costos y existencias por producto</h2><p>Completa costos reales cuando dispongas de un panel protegido. En esta demo usa datos ficticios. Los márgenes se estiman sobre precios y costos unitarios.</p></div></div>'+
-    '<div class="decision-cost-table"><table class="data-table"><thead><tr><th>Producto</th><th>Precio normal</th><th>Precio vigente</th><th>Costo unitario</th><th>Existencias</th><th>Margen estimado</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="decision-section-title"><div><span class="eyebrow">Control de márgenes</span><h2>Costos y existencias por producto</h2><p>Consulta el estado de cada producto. Para cambiar precios, costos o existencias, entra a Productos y edita su ficha una sola vez.</p></div></div>'+
+    '<div class="decision-cost-table"><table class="data-table"><thead><tr><th>Producto</th><th>Precio vigente</th><th>Existencias registradas</th><th>Margen estimado</th><th>Acción</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
     '<div class="decision-bottom"><p>El valor de la herramienta no está en acumular gráficas, sino en ayudarte a mejorar la información, evitar descuentos perjudiciales y decidir qué productos revisar. Para estadísticas globales y ventas verificadas se requiere backend y registro de transacciones.</p><button id="decisionSeeAnalytics" class="decision-outline">Ver actividad del catálogo →</button></div><div id="decisionToast" class="decision-toast" role="status" hidden></div></div>';
    const root=$('#adminContent');
    bindActions(root);
@@ -69,15 +66,7 @@
    }
    renderSimulation();
    $('#saveDecisionTarget').onclick=()=>{const n=Number($('#decisionMarginTarget').value);if(!Number.isFinite(n)||n<1||n>90){feedback('Indica un porcentaje entre 1 y 90');return;}S.updateBusiness({targetMargin:n});renderDecisions();feedback('Meta actualizada')};
-   root.querySelectorAll('[data-save-product]').forEach(btn=>btn.onclick=()=>{
-    const id=btn.dataset.saveProduct,p=S.load().products.find(x=>x.id===id),tr=btn.closest('tr');if(!p||!tr)return;
-    const rawCost=tr.querySelector('[data-cost]').value.trim(),rawStock=tr.querySelector('[data-stock]').value.trim();
-    const cost=rawCost===''?null:Number(rawCost),stock=rawStock===''?null:Number(rawStock);
-    if(cost!=null&&(!Number.isFinite(cost)||cost<0)){feedback('El costo debe ser un importe positivo o estar vacío');return;}
-    if(stock!=null&&(!Number.isInteger(stock)||stock<0)){feedback('Las existencias deben ser unidades enteras');return;}
-    S.updateProduct({...p,costPrice:cost,stockQty:stock});
-    renderDecisions();feedback('Datos del producto guardados en este navegador');
-   });
+   root.querySelectorAll('[data-edit-product]').forEach(btn=>btn.onclick=()=>openProductEditor(btn.dataset.editProduct));
    $('#decisionSeeAnalytics').onclick=()=>navTo('analytics');
  }
  const originalRender=render;
