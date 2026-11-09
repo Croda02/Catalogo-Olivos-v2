@@ -170,7 +170,7 @@ function contactWhatsApp(){
   window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank','noopener');
 }
 function bindGlobal(){
-  $('#searchInput').addEventListener('input',e=>{currentSearch=e.target.value.trim(); currentCategory='Todos'; renderCategories(); renderProducts(); clearTimeout(window.__searchTimer); window.__searchTimer=setTimeout(()=>{if(currentSearch)S.record('search',{query:currentSearch})},600);});
+  $('#searchInput').addEventListener('input',e=>{currentSearch=e.target.value.trim(); currentCategory='Todos'; renderCategories(); renderProducts(); clearTimeout(window.__searchTimer); window.__searchTimer=setTimeout(()=>{if(currentSearch){S.record('search',{query:currentSearch});if(!$('#productGrid').children.length)S.record('search_no_results',{query:currentSearch});}},650);});
   $('#sortSelect').onchange=e=>{currentSort=e.target.value;renderProducts()};
   $$('[data-filter]').forEach(b=>b.onclick=()=>{$$('[data-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFilter=b.dataset.filter;renderProducts();});
   $('#clearFiltersBtn').onclick=()=>{currentCategory='Todos';currentSearch='';currentFilter='all';$('#searchInput').value='';$$('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));renderCategories();renderProducts();};
