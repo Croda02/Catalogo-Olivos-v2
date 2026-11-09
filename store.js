@@ -52,7 +52,7 @@
     ];
     return {
       version:5,
-      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',catalogLimit:60,accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
+      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
       categories:['Decoración','Textiles','Aromas','Cocina y mesa','Accesorios','Regalos'],
       products:products.map(decorateProduct),
       promotions:[
@@ -127,7 +127,7 @@
     const idx=s.products.findIndex(p=>p.id===product.id);
     if(idx>=0) s.products[idx]=decorateProduct({...s.products[idx],...product});
     else{
-      if(s.products.length>=s.business.catalogLimit) throw new Error('Has llegado al límite de productos del catálogo.');
+      // No se aplican cuotas comerciales desde el navegador. En SaaS deben validarse en servidor.
       s.products.unshift(decorateProduct({...product,id:product.id||slugify(product.name)||uid('prod')}));
     }
     save(s,'product'); return s;
