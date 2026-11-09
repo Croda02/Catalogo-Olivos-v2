@@ -86,7 +86,7 @@ function cardHTML(p){
 
 function wireProductCards(){
   $$('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation(); S.toggleFavorite(b.dataset.fav); state=S.load(); renderHeader(); renderProducts(); toast(favorites().includes(b.dataset.fav)?'Guardado en favoritos':'Quitado de favoritos');});
-  $('[data-add]').forEach(b=>b.onclick=e=>{e.stopPropagation(); const p=productById(b.dataset.add); if(!p||p.availability==='Agotado')return; if((p.variants||[]).length>1){openProduct(p.id);return;} S.addSelection(p.id,1,p.variants?.[0]||''); state=S.load(); renderHeader(); toast(`${p.name} agregado a tu pedido`);});
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=e=>{e.stopPropagation(); const p=productById(b.dataset.add); if(!p||p.availability==='Agotado')return; if((p.variants||[]).length>1){openProduct(p.id);return;} S.addSelection(p.id,1,p.variants?.[0]||''); state=S.load(); renderHeader(); toast(`${p.name} agregado a tu pedido`);});
   $$('[data-view]').forEach(b=>b.onclick=()=>openProduct(b.dataset.view));
   // La imagen y el botón de detalles abren la ficha con un solo toque.
 }
@@ -137,7 +137,7 @@ function openDrawer(type){
   $('#drawerClose').onclick=closeDrawer; $('#drawerBackdrop').onclick=closeDrawer;
   $$('[data-remove-select]').forEach(b=>b.onclick=()=>{const items=state.selection.filter(x=>!(x.productId===b.dataset.removeSelect&&x.variant===b.dataset.variant));S.setSelection(items);state=S.load();renderHeader();openDrawer('selection');});
   $$('[data-view-fav]').forEach(b=>b.onclick=()=>{closeDrawer();openProduct(b.dataset.viewFav)});
-  $('[data-qty-minus],[data-qty-plus]').forEach(b=>b.onclick=()=>{const items=S.load().selection;const targetId=b.dataset.qtyMinus||b.dataset.qtyPlus;const i=items.find(x=>x.productId===targetId&&x.variant===b.dataset.variant);if(!i)return;i.qty+=b.hasAttribute('data-qty-plus')?1:-1;S.setSelection(items.filter(x=>x.qty>0));state=S.load();renderHeader();openDrawer('selection');});
+  document.querySelectorAll('[data-qty-minus],[data-qty-plus]').forEach(b=>b.onclick=()=>{const items=S.load().selection;const targetId=b.dataset.qtyMinus||b.dataset.qtyPlus;const i=items.find(x=>x.productId===targetId&&x.variant===b.dataset.variant);if(!i)return;i.qty+=b.hasAttribute('data-qty-plus')?1:-1;S.setSelection(items.filter(x=>x.qty>0));state=S.load();renderHeader();openDrawer('selection');});
   $('#sendSelection') && ($('#sendSelection').onclick=()=>sendWhatsApp(state.selection));
   $('#clearSelection') && ($('#clearSelection').onclick=()=>{S.setSelection([]);state=S.load();renderHeader();openDrawer('selection');});
   $('#accountForm') && ($('#accountForm').onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target);S.createAccount(fd.get('name'),fd.get('email'));state=S.load();renderHeader();openDrawer('account');toast('Cuenta creada en esta demo');});
