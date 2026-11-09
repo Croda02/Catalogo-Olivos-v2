@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/detail-insights.css" />
+  <link rel="stylesheet" href="/decision-center.css" />
   <title>Casa Olivo — Panel del negocio</title>
 </head>
 <body class="admin-body">
@@ -22,6 +23,7 @@
       </a>
       <nav class="admin-nav" id="adminNav">
         <button data-view="dashboard" class="active"><span>⌂</span>Resumen</button>
+        <button data-view="decisions"><span>◎</span>Centro de decisiones</button>
         <button data-view="products"><span>□</span>Productos</button>
         <button data-view="promotions"><span>◇</span>Promociones</button>
         <button data-view="customers"><span>♙</span>Clientes</button>
@@ -50,5 +52,7 @@
   <script src="/store.js"></script>
   <script src="/admin.js"></script>
   <script src="/admin-insights.js"></script>
+  <script src="/decision-engine.js"></script>
+  <script src="/decision-ui.js"></script>
 </body>
 </html>
