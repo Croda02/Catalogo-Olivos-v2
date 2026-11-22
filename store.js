@@ -27,7 +27,7 @@
     ];
     return {
       version:5,
-      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',whatsappTemplates:{general:'Hola, vi el catálogo de {tienda} y quisiera hacer una consulta.',product:'Hola, vi {producto} en el catálogo de {tienda}. Me interesa la opción {variante}, cantidad {cantidad}, precio estimado {subtotal}. ¿Podrían confirmarme disponibilidad y entrega?',order:'Hola, quiero consultar este pedido en {tienda}:\n\n{lista_productos}\n\nSubtotal estimado: {subtotal}\n\n¿Me confirman disponibilidad y entrega?'},accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://casa-olivo-demo.vercel.app'},
+      business:{name:'Casa Olivo',tagline:'Hogar que inspira',whatsapp:'2288564889',whatsappTemplates:{general:'Hola, vi el catálogo de {tienda} y quisiera hacer una consulta.',product:'Hola, vi {producto} en el catálogo de {tienda}. Me interesa la opción {variante}, cantidad {cantidad}, precio estimado {subtotal}. ¿Podrían confirmarme disponibilidad y entrega?',order:'Hola, quiero consultar este pedido en {tienda}:\n\n{lista_productos}\n\nSubtotal estimado: {subtotal}\n\n¿Me confirman disponibilidad y entrega?'},accent:'#31472d',instagram:'@casaolivo',catalogUrl:'https://catalogo-olivos-v2.vercel.app',logo:'',heroEyebrow:'Una casa, infinitas historias',heroTitle:'Lo cotidiano',heroEmphasis:'extraordinario.',heroDescription:'Objetos que transforman momentos sencillos en pequeños rituales. Descubre piezas para disfrutar cada rincón.',heroImage:'/hero.jpg'},
       categories:['Decoración','Textiles','Aromas','Cocina y mesa','Accesorios','Regalos'],
       products:products.map(decorateProduct),
       promotions:[
@@ -82,7 +82,7 @@
     localStorage.setItem(KEY,JSON.stringify(state));
     if(channel) channel.postMessage({type:'state',reason,ts:Date.now()});
     window.dispatchEvent(new CustomEvent('casaolivo:state',{detail:{reason}}));
-    if(window.CasaRemote && window.CasaRemote.isOwner() && ['product','product-delete','promotion','promotion-delete','business'].includes(reason)){
+    if(window.CasaRemote && window.CasaRemote.isOwner() && ['product','product-delete','promotion','promotion-delete','business','categories'].includes(reason)){
       window.CasaRemote.queueAdminSave();
     }
   }
@@ -120,7 +120,7 @@
   function deletePromotion(id){const s=load();s.promotions=s.promotions.filter(p=>p.id!==id);save(s,'promotion-delete');return s;}
   function updateBusiness(patch){
     // Datos editables por el comercio en esta demo; nunca incluir planes ni cuotas.
-    const allowed=['name','tagline','whatsapp','accent','instagram','targetMargin','whatsappTemplates'];
+    const allowed=['name','tagline','whatsapp','accent','instagram','targetMargin','whatsappTemplates','logo','heroEyebrow','heroTitle','heroEmphasis','heroDescription','heroImage'];
     const clean={};
     for(const key of allowed)if(Object.prototype.hasOwnProperty.call(patch||{},key))clean[key]=patch[key];
     if(Object.prototype.hasOwnProperty.call(clean,'whatsappTemplates')){
@@ -180,7 +180,7 @@
     const visits=sessions.size,viewedCount=[...viewed].filter(x=>sessions.has(x)).length,selectedCount=[...selected].filter(x=>sessions.has(x)).length,sentCount=[...sent].filter(x=>sessions.has(x)).length;
     const noResult=events.filter(e=>e.type==='search_no_results');
     const abandoned=Math.max(0,selectedCount-sentCount);
-    return {days,includeDemo,visits,views:count('product_view'),viewedCount,selectedCount,sentCount,whatsappClicks:count('whatsapp_click'),searchCount:count('search'),noResultQueries:noResult.map(e=>e.query).filter(Boolean),abandoned,rate:visits?sentCount/visits*100:0,products,sources,searches,daily,events,seedExcluded:(s.analytics||[]).filter(e=>String(e.sessionId||'').startsWith('seed_')).length,localOnly:true};
+    return {days,includeDemo,visits,views:count('product_view'),viewedCount,selectedCount,sentCount,whatsappClicks:count('whatsapp_click'),searchCount:count('search'),noResultQueries:noResult.map(e=>e.query).filter(Boolean),abandoned,rate:visits?sentCount/visits*100:0,products,sources,searches,daily,events,seedExcluded:(s.analytics||[]).filter(e=>String(e.sessionId||'').startsWith('seed_')).length,localOnly:!(window.CasaRemote&&window.CasaRemote.isOwner())};
   }
   function applyCloud(publicData, privateData, events){
     if(!publicData || !Array.isArray(publicData.products) || !publicData.business)return;
