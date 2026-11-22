@@ -185,7 +185,7 @@
   function applyCloud(publicData, privateData, events){
     if(!publicData || !Array.isArray(publicData.products) || !publicData.business)return;
     const s=load();
-    s.business={...publicData.business};
+    s.business={...publicData.business,...(privateData && privateData.business ? privateData.business : {})};
     s.categories=Array.isArray(publicData.categories)?publicData.categories:[];
     s.products=publicData.products.map(p=>{
       const privateProduct=privateData && privateData.products ? privateData.products[p.id] : null;
@@ -198,5 +198,11 @@
     if(channel)channel.postMessage({type:'state',reason:'cloud',ts:Date.now()});
     window.dispatchEvent(new CustomEvent('casaolivo:state',{detail:{reason:'cloud'}}));
   }
-  window.CasaStore={insights,KEY,money,slugify,uid,load,save,reset,record,sessionId,updateProduct,deleteProduct,updatePromotion,deletePromotion,updateBusiness,createAccount,logout,toggleFavorite,addSelection,setSelection,stats,channel,applyCloud};
+  function forgetPrivate(){
+    const s=load();
+    s.products=(s.products||[]).map(p=>{const clone={...p};delete clone.costPrice;delete clone.stockQty;return clone;});
+    if(s.business)delete s.business.targetMargin;
+    localStorage.setItem(KEY,JSON.stringify(s));
+  }
+  window.CasaStore={insights,KEY,money,slugify,uid,load,save,reset,record,sessionId,updateProduct,deleteProduct,updatePromotion,deletePromotion,updateBusiness,createAccount,logout,toggleFavorite,addSelection,setSelection,stats,channel,applyCloud,forgetPrivate};
 })();
