@@ -1,4 +1,4 @@
-/* Insights comerciales: etiquetas honestas para una demo cuyo almacenamiento es local. */
+/* Insights comerciales: etiquetas honestas para una demo cuyo almacenamiento es registrado. */
 (function(){
  const escape=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
  let showDemo=false;
@@ -7,13 +7,13 @@
  const topList=(obj,max=6)=>Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,max);
  const viewData=()=>S.insights(days,{includeDemo:showDemo});
  const kpi2=(title,val,subtitle)=>'<div class="insight-kpi"><small>'+title+'</small><strong>'+val+'</strong><span>'+subtitle+'</span></div>';
- const header=(title,description)=>titleRow(title,description,`<div class="insight-controls"><select id="daysSelect" aria-label="Periodo"><option value="7">7 días</option><option value="30">30 días</option><option value="90">90 días</option></select><label class="insight-toggle"><input type="checkbox" id="demoSwitch" ${showDemo?'checked':''}> Incluir datos simulados</label></div>`);
- function wireControls(renderFn){$('#daysSelect').value=String(days);$('#daysSelect').onchange=e=>{days=Number(e.target.value);renderFn()};$('#demoSwitch').onchange=e=>{showDemo=e.target.checked;renderFn()}}
- const note=`<section class="insight-warning"><strong>Entorno de demostración · datos almacenados en este navegador</strong><p>Estas cifras NO son resultados globales ni ventas verificadas. Los eventos históricos de ejemplo están excluidos por defecto. Cada visitante almacena sus propios eventos en su dispositivo y no existe consolidación entre usuarios. Un clic en WhatsApp solo indica intención; no confirma mensaje enviado, pedido recibido ni venta.</p></section>`;
- const funnel=m=>`<div class="insight-funnel">${[['Visitas en este navegador',m.visits],['Sesiones que vieron productos',m.viewedCount],['Sesiones con artículos añadidos',m.selectedCount],['Sesiones con intención de pedido',m.sentCount]].map(([x,n],i)=>`<div class="insight-funnel-row"><span>${escape(x)}</span><div class="insight-funnel-bar"><i style="width:${m.visits?Math.min(100,n/m.visits*100):0}%"></i></div><strong>${N(n)}</strong></div>`).join('')}</div>`;
+  const header=(title,description)=>titleRow(title,description,'<div class="insight-controls"><select id="daysSelect" aria-label="Periodo"><option value="7">7 días</option><option value="30">30 días</option><option value="90">90 días</option></select></div>');
+  function wireControls(renderFn){$('#daysSelect').value=String(days);$('#daysSelect').onchange=e=>{days=Number(e.target.value);renderFn()}}
+  const note='<section class="insight-warning"><strong>Interacciones registradas en el catálogo público</strong><p>Se muestran eventos anónimos recibidos en la base de datos. Una consulta por WhatsApp indica que el comprador abrió el enlace, no confirma que envió el mensaje ni que compró. Las cifras pueden estar afectadas por bloqueadores, red o visitas automatizadas.</p></section>';
+ const funnel=m=>`<div class="insight-funnel">${[['Visitas en el catálogo',m.visits],['Sesiones que vieron productos',m.viewedCount],['Sesiones con artículos añadidos',m.selectedCount],['Sesiones con intención de pedido',m.sentCount]].map(([x,n],i)=>`<div class="insight-funnel-row"><span>${escape(x)}</span><div class="insight-funnel-bar"><i style="width:${m.visits?Math.min(100,n/m.visits*100):0}%"></i></div><strong>${N(n)}</strong></div>`).join('')}</div>`;
  function recommendations(m){
   const list=[];
-  if(!m.visits)list.push('Todavía no hay visitas registradas en este navegador durante el periodo. Comparte el enlace del catálogo para comenzar a comprobar el flujo.');
+  if(!m.visits)list.push('Todavía no hay visitas registradas en el catálogo durante el periodo. Comparte el enlace del catálogo para comenzar a comprobar el flujo.');
   if(m.visits>0&&m.viewedCount/m.visits<.45)list.push('Pocas sesiones abren fichas: revisa el inicio, las fotografías y la visibilidad del botón de detalles.');
   if(m.viewedCount>=5&&m.selectedCount/m.viewedCount<.15)list.push('Hay exploración sin selección: mejora especificaciones, fotografías y claridad de precios de los productos más vistos.');
   if(m.selectedCount>=3&&m.sentCount/m.selectedCount<.3)list.push('Muchos usuarios preparan pedidos sin abrir WhatsApp: simplifica el texto y comprueba el número comercial.');
@@ -33,13 +33,13 @@
     '</div>'+
     '<div class="insight-grid"><section class="panel"><div class="panel-head"><h3>Del interés al pedido</h3></div>'+funnel(m)+'</section>'+
     '<section class="panel"><div class="panel-head"><h3>Qué conviene mejorar</h3></div>'+recommendations(m)+'</section></div>'+
-    '<div class="insight-grid"><section class="panel"><div class="panel-head"><h3>Visitas locales por día</h3></div>'+barChart(d.map(x=>x.visits))+'</section><section class="panel"><div class="panel-head"><h3>Productos que atraen</h3></div><div class="rank-list">'+(top.length?top.map(([id,x],i)=>{const p=prod(id);return p?'<div class="rank-item"><b>'+(i+1)+'</b><img src="'+escape(p.image)+'" alt=""><div><strong>'+escape(p.name)+'</strong><small>'+N(x.adds)+' añadidos · '+N(x.contacts)+' clics de contacto</small></div><b>'+N(x.views)+'</b></div>':''}).join(''):'<p class="insight-muted">Sin vistas registradas todavía.</p>')+'</div></section></div>';
+    '<div class="insight-grid"><section class="panel"><div class="panel-head"><h3>Visitas registradas por día</h3></div>'+barChart(d.map(x=>x.visits))+'</section><section class="panel"><div class="panel-head"><h3>Productos que atraen</h3></div><div class="rank-list">'+(top.length?top.map(([id,x],i)=>{const p=prod(id);return p?'<div class="rank-item"><b>'+(i+1)+'</b><img src="'+escape(p.image)+'" alt=""><div><strong>'+escape(p.name)+'</strong><small>'+N(x.adds)+' añadidos · '+N(x.contacts)+' clics de contacto</small></div><b>'+N(x.views)+'</b></div>':''}).join(''):'<p class="insight-muted">Sin vistas registradas todavía.</p>')+'</div></section></div>';
    wireControls(renderDashboard);
  };
  renderAnalytics=function(){
    const m=viewData();const rows=state.products.map(p=>({p,x:m.products[p.id]||{views:0,adds:0,contacts:0,favorites:0}})).sort((a,b)=>b.x.views-a.x.views);
    $('#adminContent').innerHTML=header('Analítica comercial','Identifica qué productos interesan y dónde se detienen las consultas.')+note+
-   '<div class="insight-kpis">'+kpi2('Sesiones',N(m.visits),'Aperturas locales')+kpi2('Intenciones de pedido',N(m.sentCount),'No son ventas')+kpi2('Consultas por WhatsApp',N(m.whatsappClicks),'Clics vinculados a productos')+kpi2('Búsquedas',N(m.searchCount),'Términos buscados')+'</div>'+
+   '<div class="insight-kpis">'+kpi2('Sesiones',N(m.visits),'Aperturas registradas')+kpi2('Intenciones de pedido',N(m.sentCount),'No son ventas')+kpi2('Consultas por WhatsApp',N(m.whatsappClicks),'Clics vinculados a productos')+kpi2('Búsquedas',N(m.searchCount),'Términos buscados')+'</div>'+
    '<section class="panel insight-table-panel"><div class="panel-head"><h3>Rendimiento por producto</h3><span>Solo eventos del navegador actual</span></div><div class="insight-table-scroll"><table class="data-table"><thead><tr><th>Producto</th><th>Vistas</th><th>Añadidos</th><th>Contactos</th><th>Guardados*</th><th>Interés por vista</th></tr></thead><tbody>'+rows.map(({p,x})=>'<tr><td><div class="product-cell"><img src="'+escape(p.image)+'" alt=""><div><strong>'+escape(p.name)+'</strong><small>'+escape(p.category)+'</small></div></div></td><td>'+N(x.views)+'</td><td>'+N(x.adds)+'</td><td>'+N(x.contacts)+'</td><td>'+N(x.favorites)+'</td><td>'+(x.views?fmt(x.adds/x.views*100):'—')+'</td></tr>').join('')+'</tbody></table></div><small class="insight-muted">* Guardados representa activaciones de favoritos, no personas únicas. La tasa por vista es orientativa, no tasa de compra.</small></section>'+
    '<div class="insight-grid"><section class="panel"><h3>Fuentes registradas</h3>'+(Object.keys(m.sources).length?topList(m.sources,8).map(([k,v])=>'<div class="insight-pair"><span>'+escape(k)+'</span><strong>'+N(v)+'</strong></div>').join(''):'<p class="insight-muted">Sin fuentes registradas.</p>')+'<p class="insight-muted">Para distinguir campañas utiliza ?src=instagram, ?src=facebook o ?src=qr en el enlace.</p></section>'+
    '<section class="panel"><h3>Lo que buscan</h3>'+(Object.keys(m.searches).length?topList(m.searches,8).map(([k,v])=>'<div class="insight-pair"><span>'+escape(k)+'</span><strong>'+N(v)+'</strong></div>').join(''):'<p class="insight-muted">Aún no hay búsquedas.</p>')+'<h4>Búsquedas sin resultados</h4>'+(m.noResultQueries.length?'<p>'+m.noResultQueries.slice(0,8).map(escape).join(', ')+'</p>':'<p class="insight-muted">No se han registrado búsquedas sin resultados.</p>')+'</section></div>'+
@@ -64,8 +64,33 @@
    '<div class="field"><label>Beneficios o características (una por línea)</label><textarea name="features" rows="4" placeholder="Diseño cómodo\nAcabado natural">'+escape((p?.features||[]).join('\n'))+'</textarea></div>'+
    '<div class="field"><label>Ficha técnica (Campo: valor por línea)</label><textarea name="specs" rows="4" placeholder="Material: Cerámica\nColor: Olivo">'+escape(specs)+'</textarea></div>';
    grid.appendChild(block);
+   const upload=document.createElement('div');
+   upload.className='full enriched-editor';
+   upload.innerHTML='<div class="editor-section-title"><strong>Fotografías del producto</strong><small>Sube hasta 8 fotografías. JPG, PNG, WebP o AVIF, máximo 5 MB cada una.</small></div><div class="field"><input type="file" id="productImageUpload" accept="image/jpeg,image/png,image/webp,image/avif" multiple><small id="uploadImageFeedback" role="status">Las imágenes se almacenan en la nube y se muestran a todos los compradores.</small></div>';
+   grid.appendChild(upload);
+   const uploader=upload.querySelector('#productImageUpload');
+   uploader.onchange=async()=>{
+     const feedback=upload.querySelector('#uploadImageFeedback');
+     const picked=[...uploader.files].slice(0,8);
+     uploader.disabled=true;
+     let ok=0;
+     for(const file of picked){
+       try{
+         feedback.textContent='Subiendo '+file.name+'…';
+         const url=await window.CasaRemote.uploadImage(file);
+         const galleryInput=form.querySelector('[name=gallery]');
+         const imgs=galleryInput.value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+         if(!imgs.includes(url) && imgs.length<8)imgs.push(url);
+         galleryInput.value=imgs.join('\n');
+         if(ok===0){form.querySelector('[name=image]').value=url;form.querySelector('#selectedImage').src=url;}
+         ok++;
+       }catch(error){feedback.textContent='No se pudo subir '+file.name+': '+error.message;break;}
+     }
+     if(ok===picked.length)feedback.textContent=ok+' imagen(es) cargadas. Pulsa Guardar cambios para publicar la ficha.';
+     uploader.value='';uploader.disabled=false;
+   };
    const originalSubmit=form.onsubmit;
-   form.onsubmit=e=>{
+   form.onsubmit=async e=>{
      const fd=new FormData(form);
      const lines=v=>String(v||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
      const specs={};for(const l of lines(fd.get('specs'))){const i=l.indexOf(':');if(i>0)specs[l.slice(0,i).trim()]=l.slice(i+1).trim()}
@@ -78,7 +103,7 @@
      const currentId=id||S.slugify(fd.get('name'))||'';
      originalSubmit(e);
      const latest=S.load().products.find(p=>p.id===currentId);
-     if(latest){S.updateProduct({...latest,...extras});refresh()}
+     if(latest){S.updateProduct({...latest,...extras});try{await window.CasaRemote.flush();refresh();toast('Producto publicado para todos los visitantes')}catch(error){alert('Se guardó localmente, pero no se publicó: '+error.message)}}
    };
  };
 })();
