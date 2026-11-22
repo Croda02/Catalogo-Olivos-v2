@@ -5,7 +5,7 @@
  const e=x=>String(x??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
  const money=x=>S.money(x);
  const signed=x=>x==null?'No configurado':x.toFixed(1)+'%';
- const freshness='<p class="decision-disclaimer">Los diagnósticos de fichas y márgenes se calculan con los productos guardados en este navegador. Las señales de navegación no representan a todos los visitantes. No hay ventas verificadas ni sincronización entre dispositivos. No registres datos comerciales sensibles en esta demo pública.</p>';
+ const freshness='<p class="decision-disclaimer">Los diagnósticos de fichas, existencias y márgenes son estimaciones calculadas con los datos que registra el propietario. La actividad anónima se obtiene del catálogo público. Un clic en WhatsApp no equivale a una venta confirmada.</p>';
  const tip=(severity)=>severity==='alta'?'Atención prioritaria':severity==='media'?'Mejora recomendada':'Revisar';
  const get=()=>{const s=S.load();const goal=Number(s.business.targetMargin)||30;return {state:s,traffic:S.insights(days),data:D.audit(s,S.insights(days),goal),goal};};
  const issueMarkup=(it)=>'<article class="decision-task"><div class="decision-task-symbol '+e(it.priority)+'">'+(it.priority==='alta'?'!':'↗')+'</div><div class="decision-task-content"><small>'+tip(it.priority)+'</small><strong>'+e(it.title)+'</strong><p>'+e(it.why)+'</p></div><button type="button" data-decision-action="'+e(it.kind)+'" '+(it.productId?'data-product="'+e(it.productId)+'"':'')+'>'+e(it.action)+' <span>→</span></button></article>';
@@ -21,7 +21,7 @@
    target?.scrollIntoView({behavior:'smooth',block:'start'});
   });
  };
- const headline=(a)=>'<div class="decision-hero"><div><span class="decision-hero-kicker">INTELIGENCIA COMERCIAL · DEMOSTRACIÓN</span><h1>Qué conviene hacer hoy</h1><p>Menos números sueltos. Diagnóstico de tu catálogo, márgenes orientativos y acciones concretas para vender mejor.</p></div><div class="decision-hero-score"><strong>'+a.avgQuality+'<span>/100</span></strong><small>Calidad media de fichas</small></div></div>';
+ const headline=(a)=>'<div class="decision-hero"><div><span class="decision-hero-kicker">INTELIGENCIA COMERCIAL</span><h1>Qué conviene hacer hoy</h1><p>Menos números sueltos. Diagnóstico de tu catálogo, márgenes orientativos y acciones concretas para vender mejor.</p></div><div class="decision-hero-score"><strong>'+a.avgQuality+'<span>/100</span></strong><small>Calidad media de fichas</small></div></div>';
  const metric=(label,num,desc)=>'<div class="decision-metric"><small>'+e(label)+'</small><strong>'+e(num)+'</strong><span>'+e(desc)+'</span></div>';
  function renderDecisions(){
    const {state:st,data:a,goal,traffic}=get();
