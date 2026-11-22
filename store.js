@@ -1,6 +1,8 @@
 (function(){
   const KEY='casa_olivo_demo_v4';
   const SESSION='casa_olivo_session_v1';
+  const OWNER_KEY='casa_olivo_owner_session_v1';
+  const isOwner=()=>Boolean(window.CasaRemote && window.CasaRemote.isOwner());
   const channel = 'BroadcastChannel' in window ? new BroadcastChannel('casa-olivo-demo') : null;
 
   const money = n => new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0}).format(n||0);
@@ -46,8 +48,10 @@
 
   function load(){
     try{
-      const raw=localStorage.getItem(KEY);
-      if(!raw){ const s=initialState(); localStorage.setItem(KEY,JSON.stringify(s)); return s; }
+      const storage=isOwner()?sessionStorage:localStorage;
+      const key=isOwner()?OWNER_KEY:KEY;
+      const raw=storage.getItem(key);
+      if(!raw){ const s=initialState(); storage.setItem(key,JSON.stringify(s)); return s; }
       const state=JSON.parse(raw);
       // Correct the decimal-place issue in untouched demo prices from v4.
       // Preserve edited prices, custom products and merchant configuration.
@@ -67,19 +71,20 @@
           }
         }
         state.version=5;
-        localStorage.setItem(KEY,JSON.stringify(state));
+        storage.setItem(key,JSON.stringify(state));
       }
-      if(state.business&&'catalogLimit' in state.business){delete state.business.catalogLimit;localStorage.setItem(KEY,JSON.stringify(state));}
+      if(state.business&&'catalogLimit' in state.business){delete state.business.catalogLimit;storage.setItem(key,JSON.stringify(state));}
       state.products=(state.products||[]).map(decorateProduct);
       state.analytics=(state.analytics||[]).filter(e=>!String(e.sessionId||'').startsWith('seed_'));
       // Do not present the legacy fake customer identity as a genuine account.
       state.accounts=[]; state.currentAccount=null; state.favorites={};
       return state;
-    }catch(e){ const s=initialState(); localStorage.setItem(KEY,JSON.stringify(s)); return s; }
+    }catch(e){ const s=initialState(); const storage=isOwner()?sessionStorage:localStorage; storage.setItem(isOwner()?OWNER_KEY:KEY,JSON.stringify(s)); return s; }
   }
 
   function save(state, reason='update'){
-    localStorage.setItem(KEY,JSON.stringify(state));
+    const storage=isOwner()?sessionStorage:localStorage;
+    storage.setItem(isOwner()?OWNER_KEY:KEY,JSON.stringify(state));
     if(channel) channel.postMessage({type:'state',reason,ts:Date.now()});
     window.dispatchEvent(new CustomEvent('casaolivo:state',{detail:{reason}}));
     if(window.CasaRemote && window.CasaRemote.isOwner() && ['product','product-delete','promotion','promotion-delete','business','categories'].includes(reason)){
@@ -194,11 +199,13 @@
     s.promotions=Array.isArray(publicData.promotions)?publicData.promotions:[];
     if(Array.isArray(events))s.analytics=events;
     s.accounts=[];s.currentAccount=null;s.favorites={};
-    localStorage.setItem(KEY,JSON.stringify(s));
+    const storage=isOwner()?sessionStorage:localStorage;
+    storage.setItem(isOwner()?OWNER_KEY:KEY,JSON.stringify(s));
     if(channel)channel.postMessage({type:'state',reason:'cloud',ts:Date.now()});
     window.dispatchEvent(new CustomEvent('casaolivo:state',{detail:{reason:'cloud'}}));
   }
   function forgetPrivate(){
+    sessionStorage.removeItem(OWNER_KEY);
     const s=load();
     s.products=(s.products||[]).map(p=>{const clone={...p};delete clone.costPrice;delete clone.stockQty;return clone;});
     if(s.business)delete s.business.targetMargin;
