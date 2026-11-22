@@ -15,4 +15,4 @@ jobs:
         with:
           persist-credentials: false
       - name: Run dependency-free logic tests
-        run: node --test tests/whatsapp.test.cjs
+        run: node --test tests/*.test.cjs
