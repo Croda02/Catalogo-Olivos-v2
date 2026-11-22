@@ -21,7 +21,7 @@
     await window.CasaRemote.initOwner();
     gate.hidden=true;
     shell.hidden=false;
-    for(const src of ['/admin.js','/admin-insights.js','/decision-engine.js','/decision-ui.js','/whatsapp-messages.js','/whatsapp-settings.js']){
+    for(const src of ['/admin.js','/admin-insights.js','/decision-engine.js','/decision-ui.js','/whatsapp-messages.js','/whatsapp-settings.js','/catalog-extras.js']){
       await loadScript(src);
     }
     const top=document.querySelector('.admin-user');
