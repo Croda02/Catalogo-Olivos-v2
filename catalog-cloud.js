@@ -149,8 +149,13 @@
     if(url.hostname !== new URL(URL).hostname)throw new Error('Utiliza el enlace de Supabase recibido por correo.');
     const token=url.searchParams.get('token') || url.searchParams.get('token_hash');
     if(!token)throw new Error('No se encontró un token válido en el enlace.');
-    const res=await mustClient().auth.verifyOtp({token_hash:token,type:'magiclink'});
-    if(res.error)throw res.error;
+    const kind=url.searchParams.get('type');
+    const primary=kind==='email'?'email':'magiclink';
+    let result=await mustClient().auth.verifyOtp({token_hash:token,type:primary});
+    if(result.error && primary==='magiclink'){
+      result=await mustClient().auth.verifyOtp({token_hash:token,type:'email'});
+    }
+    if(result.error)throw result.error;
     return true;
   }
   async function signOut() {
