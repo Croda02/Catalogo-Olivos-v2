@@ -34,9 +34,9 @@
   function stateToPrivate(state) {
     const costs = {};
     (state.products || []).forEach(function (p) {
-      costs[p.id] = {cost:Number(p.cost)||0,stock:Number(p.stock)||0};
+      costs[p.id] = {costPrice:p.costPrice==null?null:Number(p.costPrice),stockQty:p.stockQty==null?null:Number(p.stockQty)};
     });
-    return {products:costs,business:{targetMargin:Number(state.business.targetMargin)||0.45}};
+    return {products:costs,business:{targetMargin:Number(state.business.targetMargin)||30}};
   }
   function status(message, error) {
     const el = document.getElementById('cloudStatus');
