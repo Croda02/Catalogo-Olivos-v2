@@ -7,7 +7,7 @@
   const STORE_ID = 'casa-olivo';
   const OWNER_EMAIL = 'contacto@jcroda.com.mx';
   const PRODUCT_PUBLIC_FIELDS = ['id','name','sku','category','description','price','salePrice','image','active','availability','featured','isNew','bestSeller','tags','variants','headline','longDescription','features','specs','gallery'];
-  const BUSINESS_PUBLIC_FIELDS = ['name','tagline','whatsapp','whatsappTemplates','accent','instagram','catalogUrl'];
+  const BUSINESS_PUBLIC_FIELDS = ['name','tagline','whatsapp','whatsappTemplates','accent','instagram','catalogUrl','logo','heroEyebrow','heroTitle','heroEmphasis','heroDescription','heroImage'];
   const TRACK_TYPES = new Set(['catalog_open','product_view','whatsapp_click','selection_add','search','search_no_results','favorite_toggle','active_seconds']);
   const client = window.supabase && window.supabase.createClient
     ? window.supabase.createClient(URL, PUBLISHABLE_KEY, {auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}})
