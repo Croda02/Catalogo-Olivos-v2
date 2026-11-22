@@ -1,4 +1,4 @@
-/* Insights comerciales: etiquetas honestas para una demo cuyo almacenamiento es registrado. */
+/* Insights del catálogo con eventos anónimos y sin datos de ventas inventados. */
 (function(){
  const escape=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
  let showDemo=false;
