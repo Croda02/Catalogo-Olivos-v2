@@ -1,7 +1,7 @@
 /* Public-offline cache only. Private/API/auth content MUST remain network-only. */
-const CACHE='casa-olivo-public-v11';
+const CACHE='casa-olivo-public-v12';
 const ASSETS=[
- '/', '/index.html','/styles.css','/premium.css','/detail-insights.css','/decision-center.css','/whatsapp-settings.css','/decision-engine.js','/decision-ui.js','/premium.js','/product-detail.js','/admin-insights.js','/store.js','/app.js','/admin.js','/whatsapp-messages.js','/whatsapp-settings.js','/manifest.webmanifest','/icon.svg',
+ '/', '/index.html','/styles.css','/premium.css','/detail-insights.css','/decision-center.css','/whatsapp-settings.css','/decision-engine.js','/decision-ui.js','/premium.js','/product-detail.js','/store.js','/catalog-cloud.js','/app.js','/whatsapp-messages.js','/whatsapp-settings.js','/manifest.webmanifest','/icon.svg',
  '/hero.jpg','/mug.jpg','/candle.jpg','/candle-alt.jpg','/candle-large.jpg','/blanket.jpg','/diffuser.jpg','/tote.jpg','/stone.jpg','/desk.jpg'
 ];
 self.addEventListener('install',event=>{
