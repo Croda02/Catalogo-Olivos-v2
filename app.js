@@ -23,6 +23,18 @@ function sync(){ state=S.load(); renderHeader(); renderCategories(); renderPromo
 function renderHeader(){
   $('#brandName').textContent=state.business.name;
   $('#brandTagline').textContent=state.business.tagline;
+  const b=state.business;
+  const heroBindings={heroEyebrow:b.heroEyebrow,heroTitleMain:b.heroTitle,heroTitleEmphasis:b.heroEmphasis,heroDescription:b.heroDescription,storyBrand:b.name};
+  Object.entries(heroBindings).forEach(([id,value])=>{const el=document.getElementById(id);if(el&&value)el.textContent=value;});
+  const heroImg=document.getElementById('heroImage');
+  if(heroImg && b.heroImage && (/^https:\/\//.test(b.heroImage)||b.heroImage.startsWith('/')))heroImg.src=b.heroImage;
+  document.querySelectorAll('.brand-mark').forEach(el=>{
+    if(b.logo && (/^https:\/\//.test(b.logo)||b.logo.startsWith('/'))){
+      let img=el.querySelector('img');
+      if(!img){el.textContent='';img=document.createElement('img');img.alt='';img.style.cssText='height:38px;width:38px;object-fit:contain';el.appendChild(img);}
+      if(img.src!==b.logo)img.src=b.logo;
+    }else{el.textContent='❧';}
+  });
   document.title=state.business.name+' — Catálogo';
   const footer=document.querySelector('.footer-brand');
   if(footer){footer.querySelector('strong').textContent=state.business.name;footer.querySelector('small').textContent=state.business.tagline;}
