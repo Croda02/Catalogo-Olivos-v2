@@ -155,6 +155,7 @@
   }
   async function signOut() {
     owner=false;
+    if(window.CasaStore && window.CasaStore.forgetPrivate)window.CasaStore.forgetPrivate();
     return mustClient().auth.signOut();
   }
   window.CasaRemote={
