@@ -48,7 +48,7 @@ renderSettings=function(){
  form.querySelector('[name=name]').addEventListener('input',preview);
  wrap.querySelectorAll('[data-wa-preview]').forEach(b=>b.onclick=()=>{active=b.dataset.waPreview;wrap.querySelectorAll('[data-wa-preview]').forEach(x=>x.classList.toggle('active',x===b));preview()});
  $('#waRestoreDefaults').onclick=()=>{for(const [k,t] of Object.entries(fields))t.value=M.templates[k];preview()};
- form.onsubmit=event=>{
+ form.onsubmit=async event=>{
   event.preventDefault();
   const fd=new FormData(form);
   const whatsapp=String(fd.get('whatsapp')||'').trim();
@@ -64,6 +64,8 @@ renderSettings=function(){
     name:String(fd.get('name')||'').trim().slice(0,90),
     tagline:String(fd.get('tagline')||'').trim().slice(0,120),
     whatsapp,
+    accent:String(fd.get('accent')||'#31472d'),
+    instagram:String(fd.get('instagram')||'').trim().slice(0,120),
     whatsappTemplates:Object.fromEntries(Object.entries(fields).map(([k,field])=>[k,field.value.trim()]))
    });
    refresh();
