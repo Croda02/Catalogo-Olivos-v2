@@ -14,10 +14,36 @@
   <link rel="stylesheet" href="/decision-center.css" />
   <link rel="stylesheet" href="/whatsapp-settings.css" />
   <title>Casa Olivo — Panel del negocio</title>
+  <style>
+    .admin-shell[hidden],#ownerGate[hidden]{display:none!important}
+    #ownerGate{max-width:510px;margin:8vh auto 30px;padding:36px;background:#fff;border-radius:22px;box-shadow:0 15px 55px rgba(21,40,25,.08);font-family:'DM Sans',sans-serif}
+    #ownerGate h1{font-family:'Playfair Display',serif;font-weight:500;font-size:2rem;margin:18px 0 12px;color:#31472d}
+    #ownerGate p{line-height:1.6;color:#5e665c}
+    #ownerGate input{display:block;width:100%;padding:14px;border:1px solid #ccd4c9;border-radius:10px;margin:12px 0;box-sizing:border-box}
+    #ownerGate button{width:100%;min-height:46px}
+    #ownerGate button:disabled{opacity:.6}
+    #ownerGate details{margin-top:20px}
+    #ownerGate summary{cursor:pointer;color:#31472d;font-weight:600}
+    #ownerGateMessage{min-height:44px;font-size:13px;padding-top:18px}
+    @media(max-width:580px){#ownerGate{margin:20px 12px;padding:25px}}
+  </style>
 </head>
 <body class="admin-body">
   <div id="toast" class="toast" aria-live="polite"></div>
-  <div class="admin-shell">
+  <section id="ownerGate" aria-label="Acceso del propietario">
+    <a class="brand" href="/"><span class="brand-mark">❧</span><span><strong>Casa Olivo</strong><small>Administración privada</small></span></a>
+    <h1>Tu catálogo, bajo control.</h1>
+    <p>El panel está reservado al propietario. Para ingresar, recibe un enlace de acceso en el correo autorizado.</p>
+    <button class="btn btn-dark" type="button" id="sendOwnerLink">Enviar enlace de acceso</button>
+    <p id="ownerGateMessage" role="status">Verificando sesión…</p>
+    <details>
+      <summary>¿El enlace del correo no te devuelve aquí?</summary>
+      <p>Copia la dirección completa del enlace recibido y pégala aquí. Se verifica directamente, sin tener que abrir otra página.</p>
+      <input id="ownerLinkInput" type="url" autocomplete="off" placeholder="Pega el enlace de acceso" aria-label="Enlace recibido por correo">
+      <button class="btn btn-outline" id="verifyOwnerLink" type="button">Verificar enlace</button>
+    </details>
+  </section>
+  <div class="admin-shell" hidden>
     <aside class="admin-sidebar" id="adminSidebar">
       <a class="brand admin-brand" href="index.html">
         <span class="brand-mark">❧</span>
@@ -41,18 +67,15 @@
         <div class="admin-search"><span>⌕</span><input id="adminSearch" placeholder="Buscar en productos..." /></div>
         <div class="admin-user"><div class="avatar">CO</div><div><strong>Casa Olivo</strong><small>Propietario</small></div></div>
       </header>
-      <div style="padding:10px 24px;color:#755f36;background:#faf4e6;font-size:12px;border-bottom:1px solid #f0e5c9" role="note">Versión demostrativa: el panel no tiene autenticación y la información se almacena solo en este navegador. No introduzcas datos comerciales reales o confidenciales.</div>
+      <div style="padding:10px 24px;color:#755f36;background:#faf4e6;font-size:12px;border-bottom:1px solid #f0e5c9" role="note"><span id="cloudStatus">Conectando con la base de datos segura…</span></div>
       <main id="adminContent" class="admin-content"></main>
     </div>
   </div>
 
   <div id="modalRoot"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
   <script src="/store.js"></script>
-  <script src="/admin.js"></script>
-  <script src="/admin-insights.js"></script>
-  <script src="/decision-engine.js"></script>
-  <script src="/decision-ui.js"></script>
-  <script src="/whatsapp-messages.js"></script>
-  <script src="/whatsapp-settings.js"></script>
+  <script src="/catalog-cloud.js"></script>
+  <script src="/admin-gate.js"></script>
 </body>
 </html>
