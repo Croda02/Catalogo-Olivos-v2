@@ -23,6 +23,10 @@ function sync(){ state=S.load(); renderHeader(); renderCategories(); renderPromo
 function renderHeader(){
   $('#brandName').textContent=state.business.name;
   $('#brandTagline').textContent=state.business.tagline;
+  document.title=state.business.name+' — Catálogo';
+  const footer=document.querySelector('.footer-brand');
+  if(footer){footer.querySelector('strong').textContent=state.business.name;footer.querySelector('small').textContent=state.business.tagline;}
+  if(/^#[0-9a-f]{6}$/i.test(state.business.accent||''))document.documentElement.style.setProperty('--olive',state.business.accent);
   const a=account(); $('#accountLabel').textContent=a?`Hola, ${a.name.split(' ')[0]}`:'Mi cuenta';
   $('#favCount').textContent=favorites().length;
   $('#selectionCount').textContent=state.selection.reduce((n,i)=>n+i.qty,0);
@@ -187,3 +191,4 @@ S.record('catalog_open');
 renderHeader();renderCategories();renderPromos();renderProducts();bindGlobal();trackActive();
 S.channel && (S.channel.onmessage=()=>sync());
 window.addEventListener('storage',e=>{if(e.key===S.KEY)sync()});
+window.addEventListener('casaolivo:state',e=>{if(e.detail&&e.detail.reason==='cloud')sync()});
