@@ -10,7 +10,7 @@ function boot(overrides={}){
   const posted=[];
   const userEmail=overrides.email||'contacto@jcroda.com.mx';
   const mock={
-    auth:{getUser:async()=>({data:{user:{email:userEmail}},error:null})},
+    auth:{getUser:async()=>({data:{user:{email:userEmail}},error:null}),verifyOtp:async params=>({data:{session:{access_token:'test'}},error:params.token_hash==='valid-hash'?null:new Error('Invalid token')})},
     from(table){
       return {
         insert:row=>{posted.push({table,row});return Promise.resolve({error:null});},
@@ -72,4 +72,10 @@ test('analytics only accepts approved anonymous event types',async()=>{
   assert.equal(posted[0].row.event_type,'catalog_open');
   assert.equal(posted[0].row.customerEmail,undefined);
   assert.equal(posted[0].row.session_id,'abcdefghij');
+});
+
+test('pasted owner link uses the real URL constructor and verifies token',async()=>{
+  const {remote}=boot();
+  assert.equal(await remote.verifyPastedLink('https://eastlkfmoorylghapieq.supabase.co/auth/v1/verify?token=valid-hash&type=magiclink'),true);
+  await assert.rejects(()=>remote.verifyPastedLink('https://untrusted.example/auth/v1/verify?token=valid-hash'),/Utiliza el enlace/);
 });
