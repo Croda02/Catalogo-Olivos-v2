@@ -2,7 +2,7 @@
    ownership is enforced by Supabase Auth + PostgreSQL RLS, never by this file. */
 (function () {
   'use strict';
-  const URL = 'https://eastlkfmoorylghapieq.supabase.co';
+  const SUPABASE_URL = 'https://eastlkfmoorylghapieq.supabase.co';
   const PUBLISHABLE_KEY = 'sb_publishable_M8aIchebg6apd8fIROKuXA_vEGzKqg4';
   const STORE_ID = 'casa-olivo';
   const OWNER_EMAIL = 'contacto@jcroda.com.mx';
@@ -10,7 +10,7 @@
   const BUSINESS_PUBLIC_FIELDS = ['name','tagline','whatsapp','whatsappTemplates','accent','instagram','catalogUrl','logo','heroEyebrow','heroTitle','heroEmphasis','heroDescription','heroImage'];
   const TRACK_TYPES = new Set(['catalog_open','product_view','whatsapp_click','selection_add','search','search_no_results','favorite_toggle','active_seconds']);
   const client = window.supabase && window.supabase.createClient
-    ? window.supabase.createClient(URL, PUBLISHABLE_KEY, {auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}})
+    ? window.supabase.createClient(SUPABASE_URL, PUBLISHABLE_KEY, {auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}})
     : null;
   let owner = false;
   let lastWrite = Promise.resolve();
@@ -146,7 +146,7 @@
   }
   async function verifyPastedLink(link) {
     const url=new URL(String(link).trim());
-    if(url.hostname !== new URL(URL).hostname)throw new Error('Utiliza el enlace de Supabase recibido por correo.');
+    if(url.hostname !== new URL(SUPABASE_URL).hostname)throw new Error('Utiliza el enlace de Supabase recibido por correo.');
     const token=url.searchParams.get('token') || url.searchParams.get('token_hash');
     if(!token)throw new Error('No se encontró un token válido en el enlace.');
     const kind=url.searchParams.get('type');
