@@ -18,6 +18,7 @@ Producto de demostración comercial de **un solo negocio**, desplegado sobre el 
 - Agregar, editar, ocultar, destacar o eliminar productos; configurar precios y variantes.
 - Subir fotografías JPG/PNG/WebP/AVIF al almacenamiento compartido (máx. 5 MB por archivo) y administrar galería hasta ocho imágenes por ficha.
 - Administrar promociones, mensajes de WhatsApp y datos de contacto, color de marca e Instagram.
+- Personalizar título, descripción y fotografías de portada, cargar un logotipo y agregar, renombrar o eliminar categorías (sin eliminar categorías con productos asignados).
 - Registrar costo unitario y existencias **solo visibles al propietario** para diagnóstico comercial.
 - Consultar interacciones anónimas del catálogo en todos los dispositivos: visitas, fichas vistas, búsqueda, selección y clics a WhatsApp. Una interacción **no equivale a una venta**.
 
