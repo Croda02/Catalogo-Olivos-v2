@@ -1,50 +1,65 @@
-# Casa Olivo — catálogo digital (demostración comercial)
+# Casa Olivo · Catálogo digital independiente
 
-Versión estática publicada en Vercel. Muestra catálogo, fichas enriquecidas, selección de artículos, favoritos, panel de gestión ilustrativo y un Centro de Decisiones con cálculos y diagnósticos transparentes.
+Producto de demostración comercial de **un solo negocio**, desplegado sobre el repositorio original. No hay planes, suscripciones, registros obligatorios, administración multiempresa ni facturación SaaS.
 
-## Qué funciona en esta versión
+**Abrir:** [Catálogo público](https://catalogo-olivos-v2.vercel.app/) · [Panel del negocio](https://catalogo-olivos-v2.vercel.app/admin)
 
-- Galería con varias imágenes y descripción extendida, opciones, detalles y precio.
-- Selección de productos y consulta por WhatsApp.
-- **Configuración → WhatsApp:** teléfono, plantilla de consulta general, consulta de producto y consulta de pedido, con vista previa y variables.
-- Validación del teléfono y placeholders antes de guardar.
-- Gestión de productos, costos ilustrativos, inventario e información de promociones en el navegador.
-- Diagnóstico de completitud de fichas y simulación de margen; las métricas son **locales**, nunca se presentan como ventas confirmadas.
-- No requiere un servidor Node para servir archivos HTML/CSS/JS; Vercel despliega la rama `main`.
+## Qué permite hacer
 
-## Plantillas WhatsApp
+### Comprador
+- Explorar productos por categoría, texto, orden y promociones.
+- Ver fotografías, galería, descripción extensa, ficha técnica, variantes y disponibilidad.
+- Guardar favoritos **sin registrarse** y armar una selección con cantidades. Se guardan localmente en el navegador del comprador, no se sincronizan entre dispositivos.
+- Preparar una consulta o pedido en WhatsApp con artículos, variantes, cantidades y subtotal; el comprador debe pulsar **Enviar**. La aplicación no cobra ni confirma pedidos.
+- Usar el catálogo en móvil y escritorio.
 
-Variables permitidas: `{tienda}`, `{producto}`, `{variante}`, `{cantidad}`, `{precio}`, `{subtotal}`, `{lista_productos}`.
+### Propietario
+- Ingresar al panel privado mediante correo con enlace de un solo uso y sesión de Supabase Auth.
+- Agregar, editar, ocultar, destacar o eliminar productos; configurar precios y variantes.
+- Subir fotografías JPG/PNG/WebP/AVIF al almacenamiento compartido (máx. 5 MB por archivo) y administrar galería hasta ocho imágenes por ficha.
+- Administrar promociones, mensajes de WhatsApp y datos de contacto, color de marca e Instagram.
+- Registrar costo unitario y existencias **solo visibles al propietario** para diagnóstico comercial.
+- Consultar interacciones anónimas del catálogo en todos los dispositivos: visitas, fichas vistas, búsqueda, selección y clics a WhatsApp. Una interacción **no equivale a una venta**.
 
-Ejemplo de consulta por producto:
+## Instalación actual
 
-```text
-Hola, me interesa {producto}, opción {variante}, cantidad {cantidad}. ¿Tienen disponible? Total de referencia: {subtotal}.
-```
+- **GitHub:** repositorio `Croda02/Catalogo-Olivos-v2`, rama `main`.
+- **Vercel:** proyecto `catalogo-olivos-v2`; publica al actualizar la rama.
+- **Supabase:** proyecto `eastlkfmoorylghapieq`, una única tienda `casa-olivo`.
+- **Persistencia:** tablas `catalog_published` (datos visibles), `catalog_private` (costos, inventario y metas), `catalog_owners` (lista de correos autorizados) y `catalog_events` (analítica anónima).
+- **Imágenes subidas:** bucket público `catalog-media`, pero solo propietario puede subir o borrar. Los ejemplos del repositorio son imágenes ilustrativas.
+- **Seguridad:** todas las tablas del catálogo tienen RLS. Los visitantes solo leen los datos publicados y agregan eventos anónimos permitidos; no tienen acceso a costos, existencias ni correos autorizados. Ninguna clave de servicio está embebida en el sitio.
 
-Las plantillas se guardan en `localStorage` de este navegador y NO se propagan a otros visitantes. Para activar una plantilla de un cliente real se necesita guardar la configuración en una base de datos central por organización y servirla desde una API pública que solo exponga los campos comerciales apropiados. No se debe afirmar que el comerciante puede gestionar el catálogo en vivo hasta que este backend esté conectado.
+La clave `sb_publishable_` del cliente es pública por diseño. La protección de los datos corresponde a autenticación y políticas RLS.
 
-Un enlace `wa.me` prepara el mensaje en el dispositivo del comprador; **el comprador debe pulsar Enviar**. Esta aplicación no envía mensajes por sí sola ni confirma pedidos o ventas.
+## Primer acceso al panel
 
-## Pruebas
+1. Abre **[Panel del negocio](https://catalogo-olivos-v2.vercel.app/admin)**.
+2. Selecciona **Enviar enlace de acceso**. El correo autorizado para esta instalación es `contacto@jcroda.com.mx`.
+3. Abre el enlace que llegue a ese buzón. Supabase autentica la sesión; la base de datos valida que el correo esté en la lista de propietarios.
+4. Si el correo se abre en una página distinta al panel, copia la **dirección del enlace recibido**, despliega «¿El enlace del correo no te devuelve aquí?» y pégala para completar la verificación sin salir del catálogo.
+5. En **Productos**, modifica una ficha y guarda. Comprueba la publicación desde un navegador o teléfono diferente.
+
+**Configuración opcional recomendada:** En Supabase → Authentication → URL Configuration, establece `https://catalogo-olivos-v2.vercel.app` como Site URL y agrega la redirección `https://catalogo-olivos-v2.vercel.app/**`. De este modo el correo podrá volver directamente al panel. El proveedor de correo predeterminado de Supabase tiene restricciones de envío; para uso comercial continuo conviene configurar SMTP propio. No se han verificado todavía la recepción del primer correo ni un inicio de sesión real del propietario.
+
+## Verificar antes de presentarlo a un cliente
+
+- Confirmar que el correo de acceso llega y el panel puede guardar/leer cambios desde dos dispositivos.
+- Sustituir fotografías, descripciones, precios, promociones y el número de WhatsApp de ejemplo por los datos autorizados del negocio.
+- Probar en móvil la selección de productos, favoritos, enlace de WhatsApp y disponibilidad.
+- No introducir información de compradores: esta versión no gestiona pagos, cuentas de clientes, ventas confirmadas ni seguimiento de pedidos fuera de WhatsApp.
+- Se muestran resultados de comportamiento medidos, nunca facturación inventada. Sin consentimiento de seguimiento, políticas de privacidad adecuadas y análisis del tráfico no se deben hacer promesas de precisión absoluta de las métricas.
+
+## Pruebas automatizadas
 
 ```bash
-node --test tests/whatsapp.test.cjs
+node --test tests/*.test.cjs
 ```
 
-El workflow `.github/workflows/catalog-checks.yml` ejecuta estas pruebas en pull requests y al actualizar `main`. Las pruebas de navegador, accesibilidad, imágenes, flujo de pedidos, permisos de backend y recuperación de datos deben realizarse antes de contratar usuarios reales.
+GitHub Actions ejecuta pruebas de WhatsApp, separación de campos privados, propietario autorizado y tipos de eventos. El despliegue Vercel se comprueba aparte.
 
-## Seguridad y comercialización
+## Notas de mantenimiento
 
-**No apto aún como SaaS productivo:** `/admin` NO tiene autenticación; el catálogo NO tiene persistencia central ni separación multiempresa; las cuotas tampoco se aplican desde un servidor; los eventos de visitantes no llegan al panel del dueño. No introducir costos, clientes, contraseñas ni datos comerciales confidenciales aquí.
+La carpeta y el documento `SAAS_SECURITY_ARCHITECTURE.md` son antecedentes de una idea multiempresa anterior y **no representan este alcance comercial**. La versión actual pertenece a un solo establecimiento. Para replicarla a otra empresa se debe configurar otro proyecto o un aislamiento seguro, reautorizar al nuevo propietario y reemplazar todos los datos del negocio. No reutilices el correo del propietario actual en instalaciones ajenas.
 
-Para la fase SaaS usar autenticación de usuarios, organizaciones aisladas, controles RLS/servidor, cuotas y planes gestionados por operador, pagos y webhooks, almacenamiento y analítica central, copias de seguridad, pruebas de restauración y cumplimiento de privacidad. Ver [SAAS_SECURITY_ARCHITECTURE.md](./SAAS_SECURITY_ARCHITECTURE.md).
-
-**Estado comercial honesto:** apto para presentaciones y validación de interés con prospectos; no apto todavía para incorporar negocios con una promesa de autogestión segura, analítica consolidada o pago recurrente.
-
-## Enlaces
-
-- Catálogo de muestra: `https://catalogo-olivos-v2.vercel.app/`
-- Panel de demostración: `https://catalogo-olivos-v2.vercel.app/admin`
-
-La tienda Casa Olivo, los productos y las fotografías son ilustrativos; sustituirlos por material autorizado y verificado antes de publicar un catálogo comercial real.
+**Estado:** backend y despliegue configurados; falta la verificación manual del correo autorizado, un recorrido completo en navegador y la personalización final de datos comerciales antes de afirmar que puede entregarse a un cliente real.
